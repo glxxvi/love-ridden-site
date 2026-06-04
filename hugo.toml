@@ -1,4 +1,4 @@
 baseURL = "https://loveridden.com"
-languageCode = "en-us"
+locale = "en-us"
 title = "Love Ridden Site"
 theme = "PaperMod"
