@@ -5,282 +5,1096 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Love Ridden</title>
     <style>
-        /* ---------- CSS Variables (Light/Dark) ---------- */
+        /* ---------- Prevent flash of wrong theme ---------- */
         :root {
             --bg-body: #faf9f6;
             --text-primary: #1a1a1a;
-            --tagline: #5a5a5a;
-            --card-bg: #ffffff;
-            --card-border: #eae6df;
-            --card-shadow: 0 4px 12px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.05);
-            --card-hover-shadow: 0 12px 24px rgba(0,0,0,0.05);
-            --card-hover-border: #d4cdc2;
-            --card-text: #4a4a4a;
-            --link-color: #1a1a1a;
-            --link-hover-border: #1a1a1a;
-            --footer-text: #7a7a7a;
-            --footer-border: #eae6df;
-            --toggle-bg: #eae6df;
-            --toggle-icon: #1a1a1a;
+            --text-secondary: #5a5a5a;
+            --surface: #ffffff;
+            --surface-border: #e8e4dc;
+            --surface-hover-border: #c9c3b8;
+            --surface-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.02);
+            --surface-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+            --pill-bg: #f0ede7;
+            --pill-hover: #e6e2da;
+            --accent: #1a1a1a;
+            --accent-text: #ffffff;
+            --footer-bg: #f5f3ef;
+            --footer-text: #6a6a6a;
+            --footer-border: #e8e4dc;
+            --detail-bg: #fdfcf9;
+            --detail-border: #e0dbd2;
+            --card-active-border: #1a1a1a;
+            --card-active-shadow: 0 0 0 3px rgba(26, 26, 26, 0.08);
+            --overlay-bg: #faf9f6;
+            --splash-fade: rgba(250, 249, 246, 0.97);
+            --progress-bg: #e0dbd2;
+            --progress-fill: #1a1a1a;
         }
         body.dark {
             --bg-body: #121212;
             --text-primary: #e0e0e0;
-            --tagline: #b0b0b0;
-            --card-bg: #1e1e1e;
-            --card-border: #2c2c2c;
-            --card-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
-            --card-hover-shadow: 0 12px 24px rgba(0,0,0,0.4);
-            --card-hover-border: #3a3a3a;
-            --card-text: #c0c0c0;
-            --link-color: #e0e0e0;
-            --link-hover-border: #e0e0e0;
-            --footer-text: #888888;
-            --footer-border: #2c2c2c;
-            --toggle-bg: #2c2c2c;
-            --toggle-icon: #e0e0e0;
+            --text-secondary: #a8a8a8;
+            --surface: #1c1c1c;
+            --surface-border: #2e2e2e;
+            --surface-hover-border: #444;
+            --surface-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.03);
+            --surface-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            --pill-bg: #2a2a2a;
+            --pill-hover: #363636;
+            --accent: #e0e0e0;
+            --accent-text: #121212;
+            --footer-bg: #181818;
+            --footer-text: #888;
+            --footer-border: #2e2e2e;
+            --detail-bg: #1a1a1a;
+            --detail-border: #333;
+            --card-active-border: #e0e0e0;
+            --card-active-shadow: 0 0 0 3px rgba(224, 224, 224, 0.1);
+            --overlay-bg: #121212;
+            --splash-fade: rgba(18, 18, 18, 0.97);
+            --progress-bg: #2e2e2e;
+            --progress-fill: #e0e0e0;
         }
-        * {
+        /* ---------- Reset & Base ---------- */
+        *,
+        *::before,
+        *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'SF Pro Display', sans-serif;
             background: var(--bg-body);
             color: var(--text-primary);
-            line-height: 1.5;
-            transition: background 0.3s, color 0.3s;
+            line-height: 1.6;
+            transition: background 0.35s ease, color 0.35s ease;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-        /* Fixed toggle */
-        .top-bar {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            z-index: 200;
-        }
-        .theme-toggle {
-            background: var(--toggle-bg);
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            padding: 8px 12px;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            backdrop-filter: blur(4px);
-            color: var(--toggle-icon);
-        }
-        /* Hero - starts full screen, will shrink on scroll */
-        .hero {
+        body.splash-active {
+            overflow: hidden;
             height: 100vh;
+        }
+
+        /* ---------- Splash Overlay ---------- */
+        .splash-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: var(--overlay-bg);
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            visibility: visible;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .splash-overlay.dismissed {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .splash-logo-wrap {
+            width: min(70vw, 70vh, 620px);
+            max-width: 90vw;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                opacity 0.4s ease;
+            animation: logoPulse 4s ease-in-out infinite;
+        }
+        @keyframes logoPulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.025);
+            }
+        }
+        .splash-overlay.dismissing .splash-logo-wrap {
+            transform: scale(0.92);
+            opacity: 0;
+        }
+        .splash-logo {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .logo-splash-light {
+            display: block;
+        }
+        .logo-splash-dark {
+            display: none;
+        }
+        body.dark .logo-splash-light {
+            display: none;
+        }
+        body.dark .logo-splash-dark {
+            display: block;
+        }
+        .splash-hint {
+            position: absolute;
+            bottom: 8vh;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.03em;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            pointer-events: none;
+        }
+        .splash-hint.visible {
+            opacity: 0.7;
+            animation: hintPulse 2s ease-in-out infinite;
+        }
+        @keyframes hintPulse {
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 0.9;
+            }
+        }
+        .splash-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--progress-bg);
+        }
+        .splash-progress-bar {
+            height: 100%;
+            background: var(--progress-fill);
+            width: 0%;
+            transition: width 0.1s linear;
+            border-radius: 0 2px 2px 0;
+        }
+
+        /* ---------- Main Layout (hidden during splash) ---------- */
+        .main-layout {
+            opacity: 0;
+            transition: opacity 0.5s ease 0.15s;
+        }
+        .main-layout.revealed {
+            opacity: 1;
+        }
+        body.splash-active .main-layout {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ---------- Header ---------- */
+        .site-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: transparent;
+            backdrop-filter: blur(0px);
+            transition: background 0.3s, backdrop-filter 0.3s, box-shadow 0.3s;
+        }
+        .site-header.scrolled-header {
+            background: var(--bg-body);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 1px 0 var(--surface-border);
+        }
+        @supports not (backdrop-filter: blur(16px)) {
+            .site-header.scrolled-header {
+                background: var(--bg-body);
+                opacity: 0.97;
+            }
+        }
+        .header-left {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .header-center {
+            flex: 1 1 auto;
+            display: flex;
             justify-content: center;
             align-items: center;
-            text-align: center;
-            transition: height 0.3s ease, padding 0.3s ease;
-            padding: 2rem;
-            will-change: height;
+            min-width: 0;
         }
-        /* Shrunk hero (scrolled past) */
-        .hero.scrolled {
-            height: auto;
-            padding: 1rem 2rem;
-            justify-content: flex-start;
+        .header-right {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        .logo {
-            max-width: 280px;
-            width: 80%;
-            height: auto;
-            margin-bottom: 1rem;
-            transition: max-width 0.3s ease;
+        /* Pill buttons */
+        .pill-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 28px;
+            background: var(--pill-bg);
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            letter-spacing: 0.01em;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+            font-family: inherit;
         }
-        .hero.scrolled .logo {
-            max-width: 120px;
-            margin-bottom: 0;
+        .pill-btn:hover {
+            background: var(--pill-hover);
+            transform: translateY(-1px);
         }
-        .logo-light { display: block; }
-        .logo-dark { display: none; }
-        body.dark .logo-light { display: none; }
-        body.dark .logo-dark { display: block; }
+        .pill-btn:active {
+            transform: scale(0.96);
+            transition: transform 0.1s ease;
+        }
+        .pill-btn.menu-btn {
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+        .pill-btn.account-btn {
+            padding: 8px 14px;
+        }
+        .pill-btn .icon {
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+        /* Theme toggle (discrete) */
+        .theme-toggle-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--pill-bg);
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+            color: var(--text-primary);
+            -webkit-tap-highlight-color: transparent;
+            font-family: inherit;
+            flex-shrink: 0;
+        }
+        .theme-toggle-pill:hover {
+            background: var(--pill-hover);
+            transform: rotate(15deg);
+        }
+        .theme-toggle-pill:active {
+            transform: scale(0.9) rotate(15deg);
+            transition: transform 0.1s ease;
+        }
+        /* Small centered logo */
+        .header-logo {
+            height: 28px;
+            width: auto;
+            display: block;
+            transition: height 0.3s ease;
+        }
+        .logo-header-light {
+            display: block;
+        }
+        .logo-header-dark {
+            display: none;
+        }
+        body.dark .logo-header-light {
+            display: none;
+        }
+        body.dark .logo-header-dark {
+            display: block;
+        }
+        @media (max-width: 640px) {
+            .site-header {
+                padding: 0.75rem 1rem;
+                gap: 0.5rem;
+            }
+            .header-logo {
+                height: 22px;
+            }
+            .pill-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+                gap: 4px;
+                border-radius: 22px;
+            }
+            .pill-btn .icon {
+                font-size: 1rem;
+            }
+            .theme-toggle-pill {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+            .header-right {
+                gap: 4px;
+            }
+            .header-left {
+                gap: 4px;
+            }
+        }
 
-        .site-tagline {
-            font-size: 1.2rem;
-            color: var(--tagline);
-            transition: opacity 0.2s, font-size 0.2s;
-        }
-        .hero.scrolled .site-tagline {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        /* Scroll content (cards) */
-        .scroll-content {
+        /* ---------- Main Content ---------- */
+        .main-content {
             max-width: 1100px;
             margin: 0 auto;
-            padding: 2rem 1.5rem 4rem;
+            padding: 1.5rem 1.5rem 2rem;
         }
+        /* Category cards grid */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 0.5rem;
+        }
+        @media (max-width: 640px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .main-content {
+                padding: 1rem 1rem 1.5rem;
+            }
+        }
+        .category-card {
+            background: var(--surface);
+            border: 1.5px solid var(--surface-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: var(--surface-shadow);
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .category-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--surface-hover-shadow);
+            border-color: var(--surface-hover-border);
+        }
+        .category-card:active {
+            transform: scale(0.975);
+            transition: transform 0.1s ease;
+        }
+        .category-card.active {
+            border-color: var(--card-active-border);
+            box-shadow: var(--card-active-shadow);
+            background: var(--detail-bg);
+        }
+        .card-icon-wrap {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: var(--pill-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            flex-shrink: 0;
+            transition: background 0.25s;
+        }
+        .category-card.active .card-icon-wrap {
+            background: var(--accent);
+            color: var(--accent-text);
+        }
+        .card-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+        }
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+        .card-controller {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            opacity: 0.7;
+            font-weight: 500;
+        }
+        .card-controller span {
+            font-weight: 600;
+            color: var(--text-primary);
+            opacity: 0.9;
+        }
+
+        /* ---------- Detail Panel (Fuller Picture) ---------- */
+        .detail-panel-wrapper {
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.45s cubic-bezier(0.2, 0.9, 0.4, 1),
+                opacity 0.35s ease 0.05s,
+                margin 0.45s cubic-bezier(0.2, 0.9, 0.4, 1);
+            margin-top: 0;
+        }
+        .detail-panel-wrapper.open {
+            max-height: 700px;
+            opacity: 1;
+            margin-top: 1.5rem;
+        }
+        .detail-panel {
+            background: var(--detail-bg);
+            border: 1.5px solid var(--detail-border);
+            border-radius: 20px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        @media (max-width: 640px) {
+            .detail-panel {
+                padding: 1.25rem;
+                gap: 1rem;
+                border-radius: 16px;
+            }
+            .detail-panel-wrapper.open {
+                max-height: 900px;
+                margin-top: 1rem;
+            }
+        }
+        .detail-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .detail-title-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .detail-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--accent);
+            color: var(--accent-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+        .detail-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+        .detail-close-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 14px;
+            border-radius: 20px;
+            background: var(--pill-bg);
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .detail-close-btn:hover {
+            background: var(--pill-hover);
+        }
+        .detail-body {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        .detail-credits {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            opacity: 0.7;
+            font-weight: 500;
+        }
+        .detail-credits strong {
+            color: var(--text-primary);
+            font-weight: 600;
+            opacity: 0.9;
+        }
+        .detail-enter-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            align-self: flex-start;
+            padding: 12px 24px;
+            border-radius: 28px;
+            background: var(--accent);
+            color: var(--accent-text);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.02em;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .detail-enter-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            filter: brightness(1.1);
+        }
+        .detail-enter-link:active {
+            transform: scale(0.95);
+            transition: transform 0.1s ease;
+        }
+        body.dark .detail-enter-link:hover {
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.1);
+        }
+
+        /* ---------- Footer ---------- */
+        .site-footer {
+            background: var(--footer-bg);
+            border-top: 1px solid var(--footer-border);
+            margin-top: 3rem;
+            padding: 2.5rem 1.5rem 2rem;
+        }
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 2rem;
         }
-        .card {
-            background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 20px;
-            border: 1px solid var(--card-border);
-            box-shadow: var(--card-shadow);
-            transition: all 0.2s ease;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s cubic-bezier(0.2,0.9,0.4,1.1), transform 0.6s cubic-bezier(0.2,0.9,0.4,1.1), background 0.2s;
+        .footer-col h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--footer-text);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
         }
-        .card.revealed {
+        .footer-col p,
+        .footer-col a {
+            font-size: 0.85rem;
+            color: var(--footer-text);
+            text-decoration: none;
+            line-height: 1.8;
+            display: block;
+            transition: color 0.2s;
+        }
+        .footer-col a:hover {
+            color: var(--text-primary);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+        .footer-bottom {
+            max-width: 1100px;
+            margin: 2rem auto 0;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--footer-border);
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--footer-text);
+            letter-spacing: 0.02em;
+        }
+        .footer-bottom strong {
+            font-weight: 600;
+            color: var(--text-primary);
+            opacity: 0.8;
+        }
+        @media (max-width: 640px) {
+            .footer-inner {
+                grid-template-columns: 1fr 1fr;
+                gap: 1.5rem;
+            }
+            .site-footer {
+                padding: 2rem 1rem 1.5rem;
+                margin-top: 2rem;
+            }
+        }
+
+        /* ---------- Subtle scroll reveal (cards animate in) ---------- */
+        .category-card {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.55s cubic-bezier(0.2, 0.9, 0.4, 1),
+                transform 0.55s cubic-bezier(0.2, 0.9, 0.4, 1),
+                border-color 0.25s,
+                box-shadow 0.25s,
+                background 0.25s;
+        }
+        .category-card.card-revealed {
             opacity: 1;
             transform: translateY(0);
         }
-        .card:nth-child(1) { transition-delay: 0.05s; }
-        .card:nth-child(2) { transition-delay: 0.15s; }
-        .card:nth-child(3) { transition-delay: 0.25s; }
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--card-hover-shadow);
-            border-color: var(--card-hover-border);
+        .category-card:nth-child(1) {
+            transition-delay: 0.05s;
         }
-        .card h3 {
-            font-size: 1.4rem;
-            font-weight: 500;
-            margin-bottom: 0.75rem;
+        .category-card:nth-child(2) {
+            transition-delay: 0.12s;
         }
-        .card p {
-            color: var(--card-text);
-            margin-bottom: 1.25rem;
+        .category-card:nth-child(3) {
+            transition-delay: 0.19s;
         }
-        .card-link {
-            color: var(--link-color);
-            text-decoration: none;
-            font-weight: 500;
-            border-bottom: 1px solid transparent;
-            transition: border-color 0.2s;
+        .category-card:nth-child(4) {
+            transition-delay: 0.26s;
         }
-        .card-link:hover {
-            border-bottom-color: var(--link-hover-border);
+        .category-card:nth-child(5) {
+            transition-delay: 0.33s;
         }
-        .footer-note {
-            text-align: center;
-            margin-top: 4rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--footer-border);
-            color: var(--footer-text);
-            font-size: 0.85rem;
-        }
-        @media (max-width: 700px) {
-            .logo { max-width: 200px; }
-            .hero.scrolled .logo { max-width: 80px; }
-            .site-tagline { font-size: 1rem; }
-            .hero.scrolled .site-tagline { font-size: 0.8rem; }
-            .cards-grid { gap: 1.2rem; }
+        .category-card:nth-child(6) {
+            transition-delay: 0.4s;
         }
     </style>
+    <!-- Inline theme init to prevent flash -->
+    <script>
+        (function() {
+            var saved = localStorage.getItem('theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
 </head>
-<body>
-    <div class="top-bar">
-        <button class="theme-toggle" id="theme-toggle">
-            <span id="theme-icon">☀️</span>
-            <span id="theme-text">Light</span>
-        </button>
+<body class="splash-active">
+    <!-- ========== SPLASH OVERLAY ========== -->
+    <div class="splash-overlay" id="splashOverlay" aria-hidden="false">
+        <div class="splash-logo-wrap">
+            <img class="splash-logo logo-splash-light"
+            src="/wordmark-black.PNG"
+            alt="Love Ridden"
+            draggable="false">
+            <img class="splash-logo logo-splash-dark"
+            src="/wordmark-white.PNG"
+            alt="Love Ridden"
+            draggable="false">
+        </div>
+        <p class="splash-hint" id="splashHint">click or scroll to continue</p>
+        <div class="splash-progress" aria-hidden="true">
+            <div class="splash-progress-bar" id="splashProgressBar"></div>
+        </div>
     </div>
 
-    <section class="hero" id="hero">
-        <img class="logo logo-light" src="/wordmark-black.PNG" alt="Love Ridden logo light">
-        <img class="logo logo-dark" src="/wordmark-white.PNG" alt="Love Ridden logo dark">
-        <p class="site-tagline">seeking the truth in artistic creation</p>
-    </section>
+    <!-- ========== MAIN LAYOUT ========== -->
+    <div class="main-layout" id="mainLayout">
+        <!-- Header -->
+        <header class="site-header" id="siteHeader">
+            <div class="header-left">
+                <button class="pill-btn menu-btn" id="menuBtn" title="Menu" aria-label="Open menu">
+                    <span class="icon">☰</span> Explore
+                </button>
+            </div>
+            <div class="header-center">
+                <img class="header-logo logo-header-light"
+                src="/wordmark-black.PNG"
+                alt="Love Ridden"
+                draggable="false">
+                <img class="header-logo logo-header-dark"
+                src="/wordmark-white.PNG"
+                alt="Love Ridden"
+                draggable="false">
+            </div>
+            <div class="header-right">
+                <button class="pill-btn account-btn" id="accountBtn" title="Account" aria-label="Account">
+                    <span class="icon">👤</span> Account
+                </button>
+                <button class="theme-toggle-pill" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle theme">
+                    <span id="themeToggleIcon">🌙</span>
+                </button>
+            </div>
+        </header>
 
-    <div class="scroll-content">
-        <div class="cards-grid">
-            <div class="card">
-                <h3>Records</h3>
-                <p>Love Ridden Records, the home of East Texas's future.</p>
-                <a href="#" class="card-link">learn more →</a>
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <!-- Category Cards -->
+            <div class="cards-grid" id="cardsGrid">
+                <!-- Cards rendered by JS -->
             </div>
-            <div class="card">
-                <h3>The Wolf Den</h3>
-                <p>The ultimate tool for athletic history in San Augustine County.</p>
-                <a href="#" class="card-link">see the work →</a>
+            <!-- Detail Panel (Fuller Picture) -->
+            <div class="detail-panel-wrapper" id="detailPanelWrapper">
+                <div class="detail-panel" id="detailPanel">
+                    <!-- Rendered dynamically -->
+                </div>
             </div>
-            <div class="card">
-                <h3>Hotseat</h3>
-                <p>A collection of independent works by locals.</p>
-                <a href="#" class="card-link">sit down →</a>
+        </main>
+
+        <!-- Footer -->
+        <footer class="site-footer">
+            <div class="footer-inner">
+                <div class="footer-col">
+                    <h4>Love Ridden</h4>
+                    <p>Seeking the truth in artistic creation. Based in East Texas.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Sub-Brands</h4>
+                    <a href="/records">Records</a>
+                    <a href="/wolf-den">The Wolf Den</a>
+                    <a href="/hotseat">Hotseat</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Info</h4>
+                    <a href="#">About</a>
+                    <a href="#">Contact</a>
+                    <a href="#">Press</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Credits</h4>
+                    <p>Site by <strong>Gabriel Hoffman</strong></p>
+                    <p>Design &amp; Development</p>
+                    <p>© <span id="footerYear"></span> Love Ridden</p>
+                </div>
             </div>
-        </div>
-        <div class="footer-note">✦  site by Gabriel Hoffman  ✦</div>
+            <div class="footer-bottom">
+                <p>✦ &nbsp;Love Ridden &mdash; seeking the truth in artistic creation&nbsp; ✦</p>
+                <p style="margin-top:0.4rem;">Built by <strong>Gabriel Hoffman</strong> · All rights reserved.</p>
+            </div>
+        </footer>
     </div>
 
     <script>
         (function() {
-            // Theme toggle (same as before)
-            const toggleBtn = document.getElementById('theme-toggle');
-            const themeIcon = document.getElementById('theme-icon');
-            const themeText = document.getElementById('theme-text');
-            function setTheme(theme) {
-                if (theme === 'dark') {
-                    document.body.classList.add('dark');
-                    localStorage.setItem('theme', 'dark');
-                    themeIcon.textContent = '🌙';
-                    themeText.textContent = 'Dark';
-                } else {
-                    document.body.classList.remove('dark');
-                    localStorage.setItem('theme', 'light');
-                    themeIcon.textContent = '☀️';
-                    themeText.textContent = 'Light';
-                }
-            }
+            // ==================== DATA ====================
+            const categoryData = [{
+                id: 'records',
+                name: 'Records',
+                icon: '🎵',
+                shortDesc: 'Love Ridden Records, the home of East Texas\'s future.',
+                controlledBy: 'Gabriel Hoffman',
+                fullDesc: 'Love Ridden Records is the flagship music imprint, dedicated to amplifying raw talent from East Texas and beyond. We focus on artist development, authentic storytelling, and high-fidelity production that honors the roots of each genre we touch.',
+                extendedCredits: 'Founder & A&R: Gabriel Hoffman · Engineering: Studio Collective · Mastering: TBD · Art Direction: In-house',
+                link: '/records',
+            }, {
+                id: 'wolf-den',
+                name: 'The Wolf Den',
+                icon: '🐺',
+                shortDesc: 'The ultimate tool for athletic history in San Augustine County.',
+                controlledBy: 'Gabriel Hoffman',
+                fullDesc: 'The Wolf Den is a comprehensive digital archive preserving the rich athletic legacy of San Augustine County. From historic game footage to statistical deep-dives, it serves as both a research tool and a community treasure for sports historians and locals alike.',
+                extendedCredits: 'Curator & Developer: Gabriel Hoffman · Data Contributors: San Augustine Athletics Dept. · Archival Support: Community Volunteers',
+                link: '/wolf-den',
+            }, {
+                id: 'hotseat',
+                name: 'Hotseat',
+                icon: '🔥',
+                shortDesc: 'A collection of independent works by locals.',
+                controlledBy: 'Gabriel Hoffman',
+                fullDesc: 'Hotseat is a rotating showcase of independent creative projects — zines, short films, podcasts, and experimental art — all produced by local talent. It\'s a platform for voices that deserve a spotlight and a space for unfiltered creative expression.',
+                extendedCredits: 'Curator: Gabriel Hoffman · Featured Creators: Rotating roster of East Texas artists · Production Support: Love Ridden Studio',
+                link: '/hotseat',
+            }];
+
+            // ==================== DOM REFS ====================
+            const splashOverlay = document.getElementById('splashOverlay');
+            const splashHint = document.getElementById('splashHint');
+            const splashProgressBar = document.getElementById('splashProgressBar');
+            const mainLayout = document.getElementById('mainLayout');
+            const siteHeader = document.getElementById('siteHeader');
+            const cardsGrid = document.getElementById('cardsGrid');
+            const detailPanelWrapper = document.getElementById('detailPanelWrapper');
+            const detailPanel = document.getElementById('detailPanel');
+            const themeToggle = document.getElementById('themeToggle');
+            const themeToggleIcon = document.getElementById('themeToggleIcon');
+            const menuBtn = document.getElementById('menuBtn');
+            const accountBtn = document.getElementById('accountBtn');
+            const footerYear = document.getElementById('footerYear');
+
+            // Set footer year
+            if (footerYear) footerYear.textContent = new Date().getFullYear();
+
+            // ==================== THEME ====================
             function getSystemPreference() {
                 return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
             }
-            function initTheme() {
-                const saved = localStorage.getItem('theme');
-                if (saved === 'dark' || saved === 'light') setTheme(saved);
-                else setTheme(getSystemPreference());
-            }
-            toggleBtn.addEventListener('click', () => {
-                const isDark = document.body.classList.contains('dark');
-                setTheme(isDark ? 'light' : 'dark');
-            });
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                if (!localStorage.getItem('theme')) setTheme(e.matches ? 'dark' : 'light');
-            });
-            initTheme();
 
-            // Collapse hero on scroll
-            const hero = document.getElementById('hero');
-            const collapsePoint = 80; // pixels scrolled before shrinking
-            function handleScroll() {
-                if (window.scrollY > collapsePoint) {
-                    hero.classList.add('scrolled');
+            function applyTheme(theme) {
+                if (theme === 'dark') {
+                    document.body.classList.add('dark');
+                    themeToggleIcon.textContent = '☀️';
+                    localStorage.setItem('theme', 'dark');
                 } else {
-                    hero.classList.remove('scrolled');
+                    document.body.classList.remove('dark');
+                    themeToggleIcon.textContent = '🌙';
+                    localStorage.setItem('theme', 'light');
                 }
             }
-            window.addEventListener('scroll', handleScroll);
-            handleScroll(); // initial check
 
-            // Reveal cards on scroll
-            const cards = document.querySelectorAll('.card');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('revealed');
-                        observer.unobserve(entry.target);
+            function initTheme() {
+                const saved = localStorage.getItem('theme');
+                if (saved === 'dark' || saved === 'light') {
+                    applyTheme(saved);
+                } else {
+                    applyTheme(getSystemPreference());
+                }
+            }
+            initTheme();
+
+            themeToggle.addEventListener('click', () => {
+                const isDark = document.body.classList.contains('dark');
+                applyTheme(isDark ? 'light' : 'dark');
+            });
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                if (!localStorage.getItem('theme')) {
+                    applyTheme(e.matches ? 'dark' : 'light');
+                }
+            });
+
+            // ==================== BUILD CARDS ====================
+            categoryData.forEach((cat) => {
+                const card = document.createElement('div');
+                card.className = 'category-card';
+                card.dataset.categoryId = cat.id;
+                card.setAttribute('role', 'button');
+                card.setAttribute('tabindex', '0');
+                card.setAttribute('aria-pressed', 'false');
+                card.innerHTML = `
+                    <div class="card-icon-wrap">${cat.icon}</div>
+                    <div class="card-name">${cat.name}</div>
+                    <div class="card-desc">${cat.shortDesc}</div>
+                    <div class="card-controller">Controlled by <span>${cat.controlledBy}</span></div>
+                `;
+                cardsGrid.appendChild(card);
+            });
+
+            const allCards = document.querySelectorAll('.category-card');
+            let activeCardId = null;
+
+            // ==================== DETAIL PANEL ====================
+            function openDetailPanel(catData) {
+                detailPanel.innerHTML = `
+                    <div class="detail-header-row">
+                        <div class="detail-title-group">
+                            <div class="detail-icon">${catData.icon}</div>
+                            <div class="detail-name">${catData.name}</div>
+                        </div>
+                        <button class="detail-close-btn" id="detailCloseBtn" aria-label="Close detail panel">
+                            ✕ Close
+                        </button>
+                    </div>
+                    <div class="detail-body">${catData.fullDesc}</div>
+                    <div class="detail-credits">
+                        <strong>Credits:</strong> ${catData.extendedCredits}
+                    </div>
+                    <a href="${catData.link}" class="detail-enter-link" aria-label="Enter ${catData.name}">
+                        Enter ${catData.name} →
+                    </a>
+                `;
+                detailPanelWrapper.classList.add('open');
+                activeCardId = catData.id;
+
+                // Bind close button
+                const closeBtn = document.getElementById('detailCloseBtn');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        closeDetailPanel();
+                    });
+                }
+
+                // Scroll detail into view smoothly
+                setTimeout(() => {
+                    detailPanelWrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 150);
+            }
+
+            function closeDetailPanel() {
+                detailPanelWrapper.classList.remove('open');
+                activeCardId = null;
+                updateCardActiveStates();
+            }
+
+            function updateCardActiveStates() {
+                allCards.forEach(card => {
+                    if (card.dataset.categoryId === activeCardId) {
+                        card.classList.add('active');
+                        card.setAttribute('aria-pressed', 'true');
+                    } else {
+                        card.classList.remove('active');
+                        card.setAttribute('aria-pressed', 'false');
                     }
                 });
-            }, { threshold: 0.2, rootMargin: "0px 0px -30px 0px" });
-            cards.forEach(card => observer.observe(card));
+            }
+
+            // Card click handlers
+            allCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const catId = card.dataset.categoryId;
+                    if (activeCardId === catId) {
+                        // Clicking same card — close
+                        closeDetailPanel();
+                    } else {
+                        // New card selected
+                        const catData = categoryData.find(c => c.id === catId);
+                        if (catData) {
+                            openDetailPanel(catData);
+                            updateCardActiveStates();
+                        }
+                    }
+                });
+                // Keyboard accessibility
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        card.click();
+                    }
+                });
+            });
+
+            // ==================== SPLASH LOGIC ====================
+            const SPLASH_DURATION = 5000; // 5 seconds
+            const SPLASH_FADE_DURATION = 500; // ms for fade-out
+            let splashDismissed = false;
+            let splashStartTime = Date.now();
+            let splashTimerId = null;
+            let progressIntervalId = null;
+
+            function dismissSplash() {
+                if (splashDismissed) return;
+                splashDismissed = true;
+
+                // Clear timers
+                if (splashTimerId) clearTimeout(splashTimerId);
+                if (progressIntervalId) clearInterval(progressIntervalId);
+
+                // Start fade-out
+                splashOverlay.classList.add('dismissing');
+
+                // Reveal main layout
+                document.body.classList.remove('splash-active');
+                mainLayout.classList.add('revealed');
+
+                // After fade transition, fully hide splash
+                setTimeout(() => {
+                    splashOverlay.classList.add('dismissed');
+                    splashOverlay.setAttribute('aria-hidden', 'true');
+                }, SPLASH_FADE_DURATION);
+
+                // Reveal cards with stagger
+                setTimeout(() => {
+                    allCards.forEach((card, i) => {
+                        setTimeout(() => {
+                            card.classList.add('card-revealed');
+                        }, i * 70);
+                    });
+                }, 200);
+            }
+
+            function updateProgressBar() {
+                const elapsed = Date.now() - splashStartTime;
+                const progress = Math.min((elapsed / SPLASH_DURATION) * 100, 100);
+                splashProgressBar.style.width = progress + '%';
+            }
+
+            // Auto-dismiss timer
+            splashTimerId = setTimeout(() => {
+                dismissSplash();
+            }, SPLASH_DURATION);
+
+            // Progress bar updates
+            progressIntervalId = setInterval(() => {
+                updateProgressBar();
+            }, 50);
+            updateProgressBar();
+
+            // Show hint after 1.5s
+            setTimeout(() => {
+                if (!splashDismissed) {
+                    splashHint.classList.add('visible');
+                }
+            }, 1500);
+
+            // Click to dismiss
+            splashOverlay.addEventListener('click', (e) => {
+                // Don't dismiss if clicking the progress bar area (avoid accidental)
+                if (!splashDismissed) {
+                    dismissSplash();
+                }
+            });
+
+            // Scroll to dismiss (wheel event)
+            window.addEventListener('wheel', function onWheel(e) {
+                if (!splashDismissed && Math.abs(e.deltaY) > 15) {
+                    dismissSplash();
+                }
+            }, { passive: true });
+
+            // Touch swipe to dismiss
+            let touchStartY = 0;
+            window.addEventListener('touchstart', function(e) {
+                if (!splashDismissed) {
+                    touchStartY = e.touches[0].clientY;
+                }
+            }, { passive: true });
+            window.addEventListener('touchmove', function(e) {
+                if (!splashDismissed && Math.abs(e.touches[0].clientY - touchStartY) > 25) {
+                    dismissSplash();
+                }
+            }, { passive: true });
+
+            // Keyboard dismiss
+            window.addEventListener('keydown', function onKey(e) {
+                if (!splashDismissed && (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    dismissSplash();
+                }
+            });
+
+            // ==================== HEADER SCROLL EFFECT ====================
+            function handleHeaderScroll() {
+                if (window.scrollY > 30) {
+                    siteHeader.classList.add('scrolled-header');
+                } else {
+                    siteHeader.classList.remove('scrolled-header');
+                }
+            }
+            window.addEventListener('scroll', handleHeaderScroll, { passive: true });
+            handleHeaderScroll();
+
+            // ==================== MENU & ACCOUNT PLACEHOLDERS ====================
+            menuBtn.addEventListener('click', () => {
+                // Placeholder — can be expanded into a dropdown or slide-out nav
+                alert('Menu — navigation links can be added here.');
+            });
+            accountBtn.addEventListener('click', () => {
+                // Placeholder — can link to account page or modal
+                alert('Account — sign-in or profile can be added here.');
+            });
+
+            // ==================== INITIAL STATE ====================
+            // Cards start hidden; they reveal after splash dismissal
+            // (handled in dismissSplash)
+
+            console.log('Love Ridden — console-style landing ready.');
+            console.log('Categories loaded:', categoryData.map(c => c.name).join(', '));
         })();
     </script>
 </body>
