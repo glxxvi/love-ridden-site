@@ -139,7 +139,7 @@
             width: min(70vw, 70vh, 620px);
             max-width: 90vw;
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s;
-            animation: logoPulse 2.5s ease-in-out infinite;
+            animation: logoPulse 3s ease-in-out infinite;
         }
         @keyframes logoPulse {
             0%, 100% { transform: scale(1); }
@@ -173,7 +173,7 @@
         }
         .splash-hint.visible {
             opacity: 0.7;
-            animation: hintPulse 0.5s ease-in-out infinite;
+            animation: hintPulse 0.8s ease-in-out infinite;
         }
         @keyframes hintPulse {
             0%,100% { opacity:0.5; }
@@ -336,7 +336,7 @@
             }
         }
 
-        /* ---------- Brand Intro (collapsible) ---------- */
+        /* ---------- Brand Intro (collapsible on scroll) ---------- */
         .brand-intro {
             max-width: 900px;
             margin: 0 auto;
@@ -347,6 +347,8 @@
             line-height: 1.8;
             transition: max-height 0.4s ease, opacity 0.4s ease, padding 0.4s ease, margin 0.4s ease;
             overflow: hidden;
+            max-height: 300px; /* large enough */
+            opacity: 1;
         }
         .brand-intro.collapsed {
             max-height: 0;
@@ -355,12 +357,6 @@
             padding-bottom: 0;
             margin-top: 0;
             margin-bottom: 0;
-        }
-        .brand-intro h2 {
-            font-size: 1.6rem;
-            font-weight: 500;
-            color: var(--text-primary);
-            margin-bottom: 0.75rem;
         }
 
         /* ---------- Main Content ---------- */
@@ -411,6 +407,13 @@
             box-shadow: var(--card-active-shadow);
             background: var(--detail-bg);
         }
+        /* Card summary (hidden when active) */
+        .card-summary {
+            transition: opacity 0.25s;
+        }
+        .category-card.active .card-summary {
+            display: none;
+        }
         .card-icon-wrap {
             width: 52px;
             height: 52px;
@@ -449,22 +452,20 @@
             opacity: 0.9;
         }
 
-        /* ---------- Detail inside card (accordion) ---------- */
+        /* Card detail (visible only when active) */
         .card-detail {
+            display: none;
             max-height: 0;
             opacity: 0;
             overflow: hidden;
             transition: max-height 0.35s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.3s ease, margin 0.35s;
             margin-top: 0;
-            border-top: 1px solid transparent;
-            padding-top: 0;
         }
         .category-card.active .card-detail {
-            max-height: 400px; /* large enough for content */
+            display: block;
+            max-height: 500px; /* enough for content */
             opacity: 1;
-            margin-top: 1rem;
-            border-top-color: var(--surface-border);
-            padding-top: 1rem;
+            margin-top: 0;
         }
         .detail-header-row {
             display: flex;
@@ -659,9 +660,8 @@
         </header>
 
         <main class="main-content" id="mainContent">
-            <!-- Brand Description (collapsible) -->
+            <!-- Brand Description (collapsible on scroll) -->
             <section class="brand-intro" id="brandIntro">
-                <h2>Love Ridden</h2>
                 <p>Founded in 2018 as a survival pact between two young creators, Love Ridden has grown into multiple arenas. Not only are we home to the foremost independent record label in East Texas, we provide services such as Photography, Videography, Studio Sessions, Mixing and Mastering, as well as Graphic Design. Love is dedicated to every project we undertake.</p>
             </section>
 
@@ -797,10 +797,12 @@
                 card.setAttribute('role', 'button');
                 card.setAttribute('tabindex', '0');
                 card.innerHTML = `
-                    <div class="card-icon-wrap">${cat.icon}</div>
-                    <div class="card-name">${cat.name}</div>
-                    <div class="card-desc">${cat.shortDesc}</div>
-                    <div class="card-controller">Controlled by <span>${cat.controlledBy}</span></div>
+                    <div class="card-summary">
+                        <div class="card-icon-wrap">${cat.icon}</div>
+                        <div class="card-name">${cat.name}</div>
+                        <div class="card-desc">${cat.shortDesc}</div>
+                        <div class="card-controller">Controlled by <span>${cat.controlledBy}</span></div>
+                    </div>
                     <div class="card-detail"></div>
                 `;
                 cardsGrid.appendChild(card);
@@ -831,7 +833,6 @@
             }
 
             function openDetail(card, catData) {
-                // Close any other open card
                 if (activeCardId && activeCardId !== catData.id) {
                     const prevCard = document.querySelector(`.category-card[data-category-id="${activeCardId}"]`);
                     if (prevCard) prevCard.classList.remove('active');
@@ -839,7 +840,6 @@
                 setDetailContent(card, catData);
                 card.classList.add('active');
                 activeCardId = catData.id;
-                // Scroll to keep the card in view
                 setTimeout(() => {
                     card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }, 100);
@@ -853,10 +853,8 @@
                 activeCardId = null;
             }
 
-            // Card click handler
             allCards.forEach(card => {
                 card.addEventListener('click', (e) => {
-                    // Prevent closing when clicking inside detail (except close button)
                     if (e.target.closest('.detail-close-btn')) return;
                     const catId = card.dataset.categoryId;
                     if (activeCardId === catId) {
@@ -876,8 +874,8 @@
                 });
             });
 
-            // ==================== SPLASH (2.23 seconds) ====================
-            const SPLASH_DURATION = 2230;
+            // ==================== SPLASH (3.2 seconds) ====================
+            const SPLASH_DURATION = 3200;
             const SPLASH_FADE = 500;
             let splashDismissed = false;
             let splashStart = Date.now();
@@ -902,6 +900,9 @@
                         setTimeout(() => card.classList.add('card-revealed'), i * 70);
                     });
                 }, 200);
+
+                // Check scroll position immediately after splash dismiss
+                handleBrandIntroVisibility();
             }
 
             function updateProgress() {
@@ -943,12 +944,11 @@
 
             // ==================== BRAND INTRO COLLAPSE ON SCROLL ====================
             function handleBrandIntroVisibility() {
-                const rect = brandIntro.getBoundingClientRect();
-                const isVisible = rect.bottom > 0 && rect.top < window.innerHeight;
-                if (!isVisible) {
-                    brandIntro.classList.add('collapsed');
-                } else {
+                // Collapse immediately when scrolled away from top, show only at very top
+                if (window.scrollY <= 0) {
                     brandIntro.classList.remove('collapsed');
+                } else {
+                    brandIntro.classList.add('collapsed');
                 }
             }
             window.addEventListener('scroll', handleBrandIntroVisibility, { passive: true });
