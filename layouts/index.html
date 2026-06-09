@@ -44,7 +44,6 @@
             --toggle-icon: #e0e0e0;
         }
 
-        /* Reset & Base */
         * {
             margin: 0;
             padding: 0;
@@ -56,22 +55,16 @@
             background: var(--bg-body);
             color: var(--text-primary);
             line-height: 1.5;
-            padding: 2rem 1.5rem;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        /* Header with toggle and logo */
+        /* Theme toggle button (top-right) */
         .top-bar {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 1.5rem;
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 100;
         }
-
         .theme-toggle {
             background: var(--toggle-bg);
             border: none;
@@ -84,6 +77,7 @@
             gap: 6px;
             transition: background 0.2s;
             color: var(--toggle-icon);
+            backdrop-filter: blur(4px);
         }
         .theme-toggle:hover {
             opacity: 0.8;
@@ -93,23 +87,24 @@
             font-weight: 500;
         }
 
-        .site-header {
+        /* Hero section – full viewport height */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            margin-bottom: 3rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border-header);
+            padding: 2rem;
         }
 
+        /* Logo switching (light/dark) */
         .logo {
-            max-width: 250px;
-            width: 100%;
+            max-width: 280px;
+            width: 80%;
             height: auto;
-            margin-bottom: 1rem;
-            margin-left: auto;
-            margin-right: auto;
+            margin-bottom: 1.5rem;
         }
-
-        /* Light mode logo (black) */
         .logo-light {
             display: block;
         }
@@ -127,10 +122,17 @@
             font-size: 1.2rem;
             color: var(--tagline);
             font-weight: 400;
-            margin-top: 0.5rem;
+            max-width: 90%;
         }
 
-        /* Card Grid */
+        /* Scroll‑reveal content */
+        .scroll-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 4rem 1.5rem;
+        }
+
+        /* Cards grid – same as before, but with reveal animation */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -145,7 +147,21 @@
             box-shadow: var(--card-shadow);
             transition: all 0.2s ease;
             border: 1px solid var(--card-border);
+            /* Reveal styles */
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1), background 0.2s, box-shadow 0.2s;
         }
+
+        .card.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Staggered delay for each card (optional) */
+        .card:nth-child(1) { transition-delay: 0.05s; }
+        .card:nth-child(2) { transition-delay: 0.15s; }
+        .card:nth-child(3) { transition-delay: 0.25s; }
 
         .card:hover {
             transform: translateY(-4px);
@@ -192,14 +208,21 @@
 
         /* Mobile adjustments */
         @media (max-width: 700px) {
-            body {
+            .top-bar {
+                top: 1rem;
+                right: 1rem;
+            }
+            .hero {
                 padding: 1rem;
             }
             .logo {
-                max-width: 180px;
+                max-width: 200px;
             }
             .site-tagline {
                 font-size: 1rem;
+            }
+            .scroll-content {
+                padding: 2rem 1rem;
             }
             .cards-grid {
                 gap: 1.2rem;
@@ -211,21 +234,22 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="top-bar">
-            <button class="theme-toggle" id="theme-toggle" aria-label="Switch dark/light mode">
-                <span id="theme-icon">☀️</span>
-                <span id="theme-text">Light</span>
-            </button>
-        </div>
+    <div class="top-bar">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Switch dark/light mode">
+            <span id="theme-icon">☀️</span>
+            <span id="theme-text">Light</span>
+        </button>
+    </div>
 
-        <header class="site-header">
-            <!-- Logo that switches with theme -->
-            <img class="logo logo-light" src="/wordmark-black.PNG" alt="Love Ridden Logo (light)">
-            <img class="logo logo-dark" src="/wordmark-white.PNG" alt="Love Ridden Logo (dark)">
-            <p class="site-tagline">seeking the truth in artistic creation</p>
-        </header>
+    <!-- Hero section: full screen, centered logo + tagline -->
+    <section class="hero">
+        <img class="logo logo-light" src="/wordmark-black.PNG" alt="Love Ridden Logo (light)">
+        <img class="logo logo-dark" src="/wordmark-white.PNG" alt="Love Ridden Logo (dark)">
+        <p class="site-tagline">seeking the truth in artistic creation</p>
+    </section>
 
+    <!-- Scroll‑reveal cards -->
+    <div class="scroll-content">
         <div class="cards-grid">
             <div class="card">
                 <h3>Records</h3>
@@ -251,6 +275,7 @@
 
     <script>
         (function() {
+            // Theme toggle logic (preserved)
             const toggleBtn = document.getElementById('theme-toggle');
             const themeIcon = document.getElementById('theme-icon');
             const themeText = document.getElementById('theme-text');
@@ -288,7 +313,6 @@
             }
 
             toggleBtn.addEventListener('click', toggleTheme);
-
             window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
                 if (!localStorage.getItem('theme')) {
                     setTheme(e.matches ? 'dark' : 'light');
@@ -296,6 +320,19 @@
             });
 
             initTheme();
+
+            // Intersection Observer for scroll‑reveal cards
+            const cards = document.querySelectorAll('.card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        observer.unobserve(entry.target); // only trigger once
+                    }
+                });
+            }, { threshold: 0.2, rootMargin: "0px 0px -30px 0px" });
+
+            cards.forEach(card => observer.observe(card));
         })();
     </script>
 </body>
