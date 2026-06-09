@@ -30,7 +30,7 @@
             --radius: 10px;
             --space-sm: 0.75rem;
             --space-md: 1.25rem;
-            --font-stack: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'SF Pro Display', sans-serif;
+            --font-stack: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
             --pastel-red: rgba(255, 179, 186, 0.8);
         }
         body.dark {
@@ -92,14 +92,13 @@
         html {
             scroll-behavior: smooth;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
         body {
             font-family: var(--font-stack);
             background: var(--bg-body);
             color: var(--text-primary);
             line-height: 1.6;
-            transition: background 0.3s ease, color 0.3s ease;
+            transition: background 0.3s, color 0.3s;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -118,7 +117,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s;
+            transition: opacity 0.5s cubic-bezier(0.4,0,0.2,1), visibility 0.5s;
             opacity: 1;
             visibility: visible;
             cursor: pointer;
@@ -131,7 +130,7 @@
             position: absolute;
             inset: 0;
             background: var(--overlay-bg);
-            opacity: 0.5;
+            opacity: 0.35;  /* 65% image visibility */
             z-index: 0;
         }
         .splash-overlay.dismissed {
@@ -144,17 +143,12 @@
             z-index: 1;
             width: min(70vw, 70vh, 620px);
             max-width: 90vw;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s;
+            transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s;
             animation: logoPulse 3s ease-in-out infinite;
         }
         @keyframes logoPulse {
-            0%,
-            100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.03);
-            }
+            0%,100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
         }
         .splash-overlay.dismissing .splash-logo-wrap {
             transform: scale(0.92);
@@ -165,20 +159,12 @@
             height: auto;
             display: block;
         }
-        .logo-splash-light {
-            display: block;
-        }
-        .logo-splash-dark {
-            display: none;
-        }
+        .logo-splash-light { display: block; }
+        .logo-splash-dark { display: none; }
         body.dark .logo-splash-light,
-        body.amoled .logo-splash-light {
-            display: none;
-        }
+        body.amoled .logo-splash-light { display: none; }
         body.dark .logo-splash-dark,
-        body.amoled .logo-splash-dark {
-            display: block;
-        }
+        body.amoled .logo-splash-dark { display: block; }
         .splash-hint {
             position: absolute;
             bottom: 8vh;
@@ -195,19 +181,12 @@
             animation: hintPulse 0.8s ease-in-out infinite;
         }
         @keyframes hintPulse {
-            0%,
-            100% {
-                opacity: 0.5;
-            }
-            50% {
-                opacity: 0.9;
-            }
+            0%,100% { opacity:0.5; }
+            50% { opacity:0.9; }
         }
         .splash-progress {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             height: 3px;
             background: var(--progress-bg);
             z-index: 1;
@@ -225,9 +204,7 @@
             opacity: 0;
             transition: opacity 0.5s ease 0.15s;
         }
-        .main-layout.revealed {
-            opacity: 1;
-        }
+        .main-layout.revealed { opacity: 1; }
         body.splash-active .main-layout {
             opacity: 0;
             pointer-events: none;
@@ -255,42 +232,26 @@
             -webkit-backdrop-filter: blur(16px);
             box-shadow: 0 1px 0 var(--surface-border);
         }
-        .header-left,
-        .header-right {
+        .header-left, .header-right {
             display: flex;
             align-items: center;
             gap: var(--space-sm);
         }
-        .header-right {
-            justify-self: end;
-        }
-        .header-center {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+        .header-right { justify-self: end; }
+        .header-center { display: flex; justify-content: center; align-items: center; }
         .header-logo {
             height: 28px;
             width: auto;
             display: block;
             transition: height 0.3s;
         }
-        .logo-header-light {
-            display: block;
-        }
-        .logo-header-dark {
-            display: none;
-        }
+        .logo-header-light { display: block; }
+        .logo-header-dark { display: none; }
         body.dark .logo-header-light,
-        body.amoled .logo-header-light {
-            display: none;
-        }
+        body.amoled .logo-header-light { display: none; }
         body.dark .logo-header-dark,
-        body.amoled .logo-header-dark {
-            display: block;
-        }
+        body.amoled .logo-header-dark { display: block; }
 
-        /* Pill buttons */
         .pill-btn {
             display: inline-flex;
             align-items: center;
@@ -310,23 +271,14 @@
             -webkit-tap-highlight-color: transparent;
             font-family: inherit;
         }
-        .pill-btn:hover {
-            background: var(--pill-hover);
-            transform: translateY(-1px);
-        }
-        .pill-btn:active {
-            transform: scale(0.96);
-        }
-        .pill-btn .icon {
-            font-size: 1.1rem;
-            line-height: 1;
-        }
+        .pill-btn:hover { background: var(--pill-hover); transform: translateY(-1px); }
+        .pill-btn:active { transform: scale(0.96); }
+        .pill-btn .icon { font-size: 1.1rem; line-height: 1; }
         .theme-toggle-pill {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 38px;
-            height: 38px;
+            width: 38px; height: 38px;
             border-radius: var(--radius);
             background: var(--pill-bg);
             border: none;
@@ -334,39 +286,20 @@
             font-size: 1.1rem;
             transition: background 0.2s, transform 0.2s, color 0.3s;
             color: var(--text-primary);
-            -webkit-tap-highlight-color: transparent;
             flex-shrink: 0;
         }
-        .theme-toggle-pill:hover {
-            background: var(--pill-hover);
-            transform: scale(1.05);
-        }
-        .theme-toggle-pill:active {
-            transform: scale(0.95);
-        }
+        .theme-toggle-pill:hover { background: var(--pill-hover); transform: scale(1.05); }
+        .theme-toggle-pill:active { transform: scale(0.95); }
 
         @media (max-width: 640px) {
-            .pill-btn .btn-text {
-                display: none;
-            }
-            .pill-btn {
-                padding: var(--space-sm);
-                gap: 0;
-            }
-            .site-header {
-                padding: var(--space-sm);
-            }
-            .header-logo {
-                height: 22px;
-            }
-            .theme-toggle-pill {
-                width: 32px;
-                height: 32px;
-                font-size: 1rem;
-            }
+            .pill-btn .btn-text { display: none; }
+            .pill-btn { padding: var(--space-sm); gap: 0; }
+            .site-header { padding: var(--space-sm); }
+            .header-logo { height: 22px; }
+            .theme-toggle-pill { width: 32px; height: 32px; font-size: 1rem; }
         }
 
-        /* ---------- Brand Intro (quicker animation) ---------- */
+        /* ---------- Brand Intro (quicker collapse) ---------- */
         .brand-intro {
             max-width: 900px;
             margin: 0 auto;
@@ -375,10 +308,7 @@
             font-size: 1.1rem;
             color: var(--text-secondary);
             line-height: 1.8;
-            transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.2s ease,
-                padding 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-                margin 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: max-height 0.25s cubic-bezier(0.4,0,0.2,1), opacity 0.2s, padding 0.25s, margin 0.25s;
             overflow: hidden;
             max-height: 300px;
             opacity: 1;
@@ -386,10 +316,8 @@
         .brand-intro.collapsed {
             max-height: 0;
             opacity: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-            margin-top: 0;
-            margin-bottom: 0;
+            padding-top: 0; padding-bottom: 0;
+            margin-top: 0; margin-bottom: 0;
         }
 
         /* ---------- Main Content ---------- */
@@ -404,17 +332,9 @@
             gap: 1.5rem;
         }
         @media (max-width: 640px) {
-            .cards-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-            .main-content {
-                padding: 1rem var(--space-sm) 1.5rem;
-            }
-            .brand-intro {
-                padding: 1.5rem var(--space-sm) 0.5rem;
-                font-size: 1rem;
-            }
+            .cards-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .main-content { padding: 1rem var(--space-sm) 1.5rem; }
+            .brand-intro { padding: 1.5rem var(--space-sm) 0.5rem; font-size: 1rem; }
         }
 
         /* Category Card */
@@ -423,43 +343,32 @@
             background: var(--surface);
             border: 1.5px solid var(--surface-border);
             border-radius: var(--radius);
-            padding: var(--space-md);
-            cursor: pointer;
             box-shadow: var(--surface-shadow);
+            cursor: pointer;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
-            transition: opacity 0.55s cubic-bezier(0.2, 0.9, 0.4, 1),
-                transform 0.55s cubic-bezier(0.2, 0.9, 0.4, 1);
+            transition: opacity 0.55s cubic-bezier(0.2,0.9,0.4,1), transform 0.55s;
+            padding: 0;
         }
         .cards-grid.reveal-complete .category-card {
-            transition: border-color 0.2s ease,
-                box-shadow 0.2s ease,
-                background 0.3s ease,
-                transform 0.2s ease;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.3s, transform 0.2s;
         }
         .category-card:hover {
             transform: translateY(-3px);
             box-shadow: var(--surface-hover-shadow);
             border-color: var(--surface-hover-border);
         }
-        .category-card:active {
-            transform: scale(0.975);
-            transition: transform 0.1s;
-        }
+        .category-card:active { transform: scale(0.975); }
         .category-card.active {
             border-color: var(--card-active-border);
             box-shadow: var(--card-active-shadow);
             background: var(--detail-bg);
         }
-        .category-card.active:hover {
-            transform: none;
-            box-shadow: var(--card-active-shadow);
-        }
+        .category-card.active:hover { transform: none; }
 
-        /* Close button positioned top-right */
+        /* Close button top-right */
         .card-close-btn {
             position: absolute;
             top: var(--space-sm);
@@ -476,44 +385,23 @@
             display: none;
             z-index: 5;
         }
-        .category-card.active .card-close-btn {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .card-close-btn:hover {
-            background: var(--pill-hover);
-        }
-        .card-close-btn .close-text {
-            font-size: 0.8rem;
-        }
-        @media (max-width: 640px) {
-            .card-close-btn .close-text {
-                display: none;
-            }
-        }
+        .category-card.active .card-close-btn { display: flex; align-items: center; gap: 4px; }
+        .card-close-btn:hover { background: var(--pill-hover); }
+        .card-close-btn .close-text { font-size: 0.8rem; }
+        @media (max-width: 640px) { .card-close-btn .close-text { display: none; } }
 
-        /* Banner behind header area */
-        .card-banner {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: calc(52px + 2 * var(--space-md) + 1rem);
-            /* icon height + padding top/bottom roughly */
-            background: var(--pastel-red);
+        /* Card header (banner area) */
+        .card-header {
+            background: transparent;
+            padding: var(--space-md);
             border-radius: var(--radius) var(--radius) 0 0;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 0;
-            pointer-events: none;
+            transition: background 0.3s;
+            flex-shrink: 0;
         }
-        .category-card.active .card-banner {
-            opacity: 1;
+        .category-card.active .card-header {
+            background: var(--pastel-red);
         }
-
-        /* Card summary content (relative to keep above banner) */
-        .card-summary {
+        .card-header-content {
             position: relative;
             z-index: 1;
             display: flex;
@@ -521,9 +409,8 @@
             gap: 0.75rem;
         }
         .card-icon-wrap {
-            width: 52px;
-            height: 52px;
-            border-radius: calc(var(--radius) * 0.8);
+            width: 52px; height: 52px;
+            border-radius: calc(var(--radius)*0.8);
             background: var(--pill-bg);
             display: flex;
             align-items: center;
@@ -536,39 +423,30 @@
             background: var(--accent);
             color: var(--accent-text);
         }
-
-        /* Card name and horizontal logo */
         .card-name {
             font-size: 1.25rem;
             font-weight: 600;
         }
-        .card-logo-horizontal {
+        /* Horizontal logo wrapper */
+        .card-horizontal-logo {
             display: none;
             height: 30px;
-            width: auto;
             max-width: 200px;
+            align-items: center;
+        }
+        .category-card.active .card-horizontal-logo { display: flex; }
+        .category-card.active .card-name { display: none; }
+        .card-horizontal-logo img {
+            height: 100%;
+            width: auto;
             object-fit: contain;
         }
-        .category-card.active .card-name {
-            display: none;
-        }
-        .category-card.active .card-logo-horizontal {
-            display: block;
-        }
-        .logo-card-light {
-            display: block;
-        }
-        .logo-card-dark {
-            display: none;
-        }
+        .logo-card-light { display: block; }
+        .logo-card-dark { display: none; }
         body.dark .logo-card-light,
-        body.amoled .logo-card-light {
-            display: none;
-        }
+        body.amoled .logo-card-light { display: none; }
         body.dark .logo-card-dark,
-        body.amoled .logo-card-dark {
-            display: block;
-        }
+        body.amoled .logo-card-dark { display: block; }
 
         .card-desc {
             font-size: 0.9rem;
@@ -584,11 +462,7 @@
             transition: opacity 0.2s, max-height 0.3s, margin 0.3s;
             overflow: hidden;
         }
-        .card-controller span {
-            font-weight: 600;
-            color: var(--text-primary);
-            opacity: 0.9;
-        }
+        .card-controller span { font-weight: 600; color: var(--text-primary); opacity: 0.9; }
         .category-card.active .card-desc,
         .category-card.active .card-controller {
             opacity: 0;
@@ -598,26 +472,21 @@
             pointer-events: none;
         }
 
-        /* Card detail (expands below header) */
+        /* Card detail */
         .card-detail {
-            position: relative;
-            z-index: 1;
             max-height: 0;
             opacity: 0;
             overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0.2, 0.9, 0.4, 1),
-                opacity 0.35s ease 0.05s,
-                margin 0.4s;
-            margin-top: 0;
+            transition: max-height 0.4s cubic-bezier(0.2,0.9,0.4,1), opacity 0.35s, padding 0.4s;
             border-top: 1px solid transparent;
-            padding-top: 0;
+            padding: 0 var(--space-md);
         }
         .category-card.active .card-detail {
             max-height: 400px;
             opacity: 1;
-            margin-top: 0.25rem;
             border-top-color: var(--surface-border);
             padding-top: 1rem;
+            padding-bottom: var(--space-md);
         }
         .detail-body {
             font-size: 0.95rem;
@@ -633,10 +502,7 @@
             font-weight: 500;
             margin-bottom: 0.75rem;
         }
-        .detail-credits strong {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
+        .detail-credits strong { color: var(--text-primary); font-weight: 600; }
         .detail-enter-link {
             display: inline-flex;
             align-items: center;
@@ -648,13 +514,9 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 0.9rem;
-            letter-spacing: 0.02em;
             transition: background 0.2s, transform 0.2s, filter 0.2s;
         }
-        .detail-enter-link:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
-        }
+        .detail-enter-link:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
         /* ---------- Footer ---------- */
         .site-footer {
@@ -668,7 +530,7 @@
             max-width: 1100px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
             gap: 2rem;
         }
         .footer-col h4 {
@@ -679,8 +541,7 @@
             margin-bottom: 0.75rem;
             font-weight: 600;
         }
-        .footer-col p,
-        .footer-col a {
+        .footer-col p, .footer-col a {
             font-size: 0.85rem;
             color: var(--footer-text);
             text-decoration: none;
@@ -688,10 +549,7 @@
             display: block;
             transition: color 0.2s;
         }
-        .footer-col a:hover {
-            color: var(--text-primary);
-            text-decoration: underline;
-        }
+        .footer-col a:hover { color: var(--text-primary); text-decoration: underline; }
         .footer-bottom {
             max-width: 1100px;
             margin: 2rem auto 0;
@@ -702,52 +560,32 @@
             color: var(--footer-text);
             transition: border-color 0.3s;
         }
-        .footer-bottom strong {
-            font-weight: 600;
-            color: var(--text-primary);
-            opacity: 0.8;
-        }
+        .footer-bottom strong { font-weight: 600; color: var(--text-primary); opacity: 0.8; }
 
-        /* Cards reveal animation */
+        /* Cards reveal */
         .category-card {
             opacity: 0;
             transform: translateY(28px);
         }
-        .category-card.card-revealed {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .category-card:nth-child(1) {
-            transition-delay: 0.05s;
-        }
-        .category-card:nth-child(2) {
-            transition-delay: 0.12s;
-        }
-        .category-card:nth-child(3) {
-            transition-delay: 0.19s;
-        }
-        .category-card:nth-child(4) {
-            transition-delay: 0.26s;
-        }
-        .category-card:nth-child(5) {
-            transition-delay: 0.33s;
-        }
-        .category-card:nth-child(6) {
-            transition-delay: 0.4s;
-        }
+        .category-card.card-revealed { opacity: 1; transform: translateY(0); }
+        .category-card:nth-child(1){ transition-delay:0.05s; }
+        .category-card:nth-child(2){ transition-delay:0.12s; }
+        .category-card:nth-child(3){ transition-delay:0.19s; }
+        .category-card:nth-child(4){ transition-delay:0.26s; }
+        .category-card:nth-child(5){ transition-delay:0.33s; }
+        .category-card:nth-child(6){ transition-delay:0.4s; }
     </style>
     <script>
-        (function() {
+        (function(){
             const saved = localStorage.getItem('theme');
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (saved === 'dark' || saved === 'amoled' || (!saved && prefersDark)) {
+            if(saved === 'dark' || saved === 'amoled' || (!saved && prefersDark)){
                 document.documentElement.classList.add(saved === 'amoled' ? 'amoled' : 'dark');
             }
         })();
     </script>
 </head>
 <body class="splash-active">
-    <!-- ========== SPLASH OVERLAY ========== -->
     <div class="splash-overlay" id="splashOverlay" aria-hidden="false">
         <div class="splash-logo-wrap">
             <img class="splash-logo logo-splash-light" src="/wordmark-black.PNG" alt="Love Ridden" draggable="false">
@@ -757,7 +595,6 @@
         <div class="splash-progress"><div class="splash-progress-bar" id="splashProgressBar"></div></div>
     </div>
 
-    <!-- ========== MAIN LAYOUT ========== -->
     <div class="main-layout" id="mainLayout">
         <header class="site-header" id="siteHeader">
             <div class="header-left">
@@ -788,29 +625,10 @@
 
         <footer class="site-footer">
             <div class="footer-inner">
-                <div class="footer-col">
-                    <h4>Love Ridden</h4>
-                    <p>Seeking the truth in artistic creation. Based in East Texas.</p>
-                </div>
-                <div class="footer-col">
-                    <h4>Sub-Brands</h4>
-                    <a href="/records">Records</a>
-                    <a href="/wolf-den">The Wolf Den</a>
-                    <a href="/hotseat">Hotseat</a>
-                </div>
-                <div class="footer-col">
-                    <h4>Info</h4>
-                    <a href="#">About</a>
-                    <a href="#">Contact</a>
-                    <a href="#">Press</a>
-                </div>
-                <div class="footer-col">
-                    <h4>Credits</h4>
-                    <p>Site by <strong>Gabriel Hoffman</strong></p>
-                    <p>Powered by <strong>Hugo</strong></p>
-                    <p>Design &amp; Development</p>
-                    <p>© <span id="footerYear"></span> Love Ridden</p>
-                </div>
+                <div class="footer-col"><h4>Love Ridden</h4><p>Seeking the truth in artistic creation. Based in East Texas.</p></div>
+                <div class="footer-col"><h4>Sub-Brands</h4><a href="/records">Records</a><a href="/wolf-den">The Wolf Den</a><a href="/hotseat">Hotseat</a></div>
+                <div class="footer-col"><h4>Info</h4><a href="#">About</a><a href="#">Contact</a><a href="#">Press</a></div>
+                <div class="footer-col"><h4>Credits</h4><p>Site by <strong>Gabriel Hoffman</strong></p><p>Powered by <strong>Hugo</strong></p><p>Design &amp; Development</p><p>© <span id="footerYear"></span> Love Ridden</p></div>
             </div>
             <div class="footer-bottom">
                 <p>✦ &nbsp;Love Ridden — seeking the truth through artistic creation&nbsp; ✦</p>
@@ -821,47 +639,12 @@
 
     <script>
         (function() {
-            // ==================== DATA ====================
             const categoryData = [
-                {
-                    id: 'records',
-                    name: 'Records',
-                    icon: '🎵',
-                    shortDesc: 'Love Ridden Records, the home of East Texas\'s future.',
-                    controlledBy: 'Gabriel Hoffman & JaBryson Crane',
-                    fullDesc: 'Love Ridden Records is the flagship music imprint, dedicated to amplifying raw talent from East Texas and beyond. We focus on artist development, authentic storytelling, and high-fidelity production that honors the roots of each genre we touch.',
-                    extendedCredits: 'Co-Founder & A&R: Gabriel Hoffman · Co-Founder: JaBryson Crane · Engineering: Studio Collective · Mastering: Gabriel Hoffman · Art Direction: In-house',
-                    link: '/records',
-                    logoHorizontalLight: '/wordmark-black.PNG',
-                    logoHorizontalDark: '/wordmark-white.PNG'
-                },
-                {
-                    id: 'wolf-den',
-                    name: 'The Wolf Den',
-                    icon: '🐺',
-                    shortDesc: 'The ultimate tool for athletic history in San Augustine County.',
-                    controlledBy: 'Gabriel Hoffman',
-                    fullDesc: 'The Wolf Den is a comprehensive digital archive preserving the rich athletic legacy of San Augustine County. From historic game annals to completed rosters from the last 15 years, it serves as both a research tool and a community treasure.',
-                    extendedCredits: 'Curator & Developer: Gabriel Hoffman · Data Contributors: San Augustine Athletics, UIL, PigskinPrep, MaxPreps, Smoaky.com · Archival Support: Community Volunteers',
-                    link: '/wolf-den',
-                    logoHorizontalLight: '/wordmark-black.PNG',
-                    logoHorizontalDark: '/wordmark-white.PNG'
-                },
-                {
-                    id: 'hotseat',
-                    name: 'Hotseat',
-                    icon: '🔥',
-                    shortDesc: 'A collection of independent works by locals.',
-                    controlledBy: 'Gabriel Hoffman',
-                    fullDesc: 'Hotseat is a rotating showcase of independent creative projects — articles, short films, podcasts, and experimental art — all produced by local talent. It\'s a platform for voices that deserve a spotlight.',
-                    extendedCredits: 'Curator: Gabriel Hoffman · Featured Creators: Rotating roster of East Texas artists · Production Support: Studio 96',
-                    link: '/hotseat',
-                    logoHorizontalLight: '/wordmark-black.PNG',
-                    logoHorizontalDark: '/wordmark-white.PNG'
-                }
+                { id:'records', name:'Records', icon:'🎵', shortDesc:"Love Ridden Records, the home of East Texas's future.", controlledBy:'Gabriel Hoffman & JaBryson Crane', fullDesc:'Love Ridden Records is the flagship music imprint, dedicated to amplifying raw talent from East Texas and beyond. We focus on artist development, authentic storytelling, and high-fidelity production.', extendedCredits:'Co-Founder & A&R: Gabriel Hoffman · Co-Founder: JaBryson Crane · Engineering: Studio Collective · Mastering: Gabriel Hoffman · Art Direction: In-house', link:'/records', logoLight:'/wordmark-black.PNG', logoDark:'/wordmark-white.PNG' },
+                { id:'wolf-den', name:'The Wolf Den', icon:'🐺', shortDesc:'The ultimate tool for athletic history in San Augustine County.', controlledBy:'Gabriel Hoffman', fullDesc:'The Wolf Den is a comprehensive digital archive preserving the rich athletic legacy of San Augustine County. From historic game annals to completed rosters from the last 15 years.', extendedCredits:'Curator & Developer: Gabriel Hoffman · Data Contributors: San Augustine Athletics, UIL, PigskinPrep, MaxPreps, Smoaky.com · Archival Support: Community Volunteers', link:'/wolf-den', logoLight:'/wordmark-black.PNG', logoDark:'/wordmark-white.PNG' },
+                { id:'hotseat', name:'Hotseat', icon:'🔥', shortDesc:'A collection of independent works by locals.', controlledBy:'Gabriel Hoffman', fullDesc:'Hotseat is a rotating showcase of independent creative projects — articles, short films, podcasts, and experimental art — all produced by local talent.', extendedCredits:'Curator: Gabriel Hoffman · Featured Creators: Rotating roster of East Texas artists · Production Support: Studio 96', link:'/hotseat', logoLight:'/wordmark-black.PNG', logoDark:'/wordmark-white.PNG' }
             ];
 
-            // ==================== DOM REFS ====================
             const splashOverlay = document.getElementById('splashOverlay');
             const splashHint = document.getElementById('splashHint');
             const splashProgressBar = document.getElementById('splashProgressBar');
@@ -874,65 +657,55 @@
             const accountBtn = document.getElementById('accountBtn');
             const footerYear = document.getElementById('footerYear');
             const brandIntro = document.getElementById('brandIntro');
-            if (footerYear) footerYear.textContent = new Date().getFullYear();
+            if(footerYear) footerYear.textContent = new Date().getFullYear();
 
-            // ==================== THEME ====================
-            const themeCycle = ['light', 'dark', 'amoled'];
-            const themeIcons = { light: '☀️', dark: '🌙', amoled: '⬛' };
-
-            function applyTheme(theme) {
-                document.body.classList.remove('dark', 'amoled');
-                if (theme === 'dark') document.body.classList.add('dark');
-                if (theme === 'amoled') document.body.classList.add('amoled');
-                themeToggleIcon.textContent = themeIcons[theme] || '🌙';
-                localStorage.setItem('theme', theme);
+            // Theme
+            const themeCycle = ['light','dark','amoled'];
+            const themeIcons = { light:'☀️', dark:'🌙', amoled:'⬛' };
+            function applyTheme(t){
+                document.body.classList.remove('dark','amoled');
+                if(t==='dark') document.body.classList.add('dark');
+                if(t==='amoled') document.body.classList.add('amoled');
+                themeToggleIcon.textContent = themeIcons[t]||'🌙';
+                localStorage.setItem('theme', t);
             }
-
-            function getNextTheme(current) {
-                const idx = themeCycle.indexOf(current);
-                return themeCycle[(idx + 1) % themeCycle.length];
-            }
-
-            function initTheme() {
-                let saved = localStorage.getItem('theme');
-                if (!saved || !themeCycle.includes(saved)) {
-                    saved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                }
-                applyTheme(saved);
+            function getNextTheme(cur){ const i = themeCycle.indexOf(cur); return themeCycle[(i+1)%3]; }
+            function initTheme(){
+                let s = localStorage.getItem('theme');
+                if(!s || !themeCycle.includes(s)) s = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                applyTheme(s);
             }
             initTheme();
-            themeToggle.addEventListener('click', () => {
-                const current = [...document.body.classList].find(c => c === 'dark' || c === 'amoled') || 'light';
-                applyTheme(getNextTheme(current));
+            themeToggle.addEventListener('click', ()=>{
+                const cur = [...document.body.classList].find(c=>c==='dark'||c==='amoled')||'light';
+                applyTheme(getNextTheme(cur));
             });
 
-            // ==================== BUILD CARDS ====================
-            categoryData.forEach(cat => {
+            // Build cards
+            categoryData.forEach(cat=>{
                 const card = document.createElement('div');
                 card.className = 'category-card';
                 card.dataset.categoryId = cat.id;
-                card.setAttribute('role', 'button');
-                card.setAttribute('tabindex', '0');
+                card.setAttribute('role','button');
+                card.tabIndex = 0;
                 card.innerHTML = `
-                    <div class="card-banner"></div>
-                    <button class="card-close-btn" aria-label="Close detail">
-                        <span>✕</span> <span class="close-text">Close</span>
-                    </button>
-                    <div class="card-summary">
-                        <div class="card-icon-wrap">${cat.icon}</div>
-                        <div class="card-name">${cat.name}</div>
-                        <img class="card-logo-horizontal logo-card-light" src="${cat.logoHorizontalLight}" alt="${cat.name} logo">
-                        <img class="card-logo-horizontal logo-card-dark" src="${cat.logoHorizontalDark}" alt="${cat.name} logo">
-                        <div class="card-desc">${cat.shortDesc}</div>
-                        <div class="card-controller">Controlled by <span>${cat.controlledBy}</span></div>
+                    <button class="card-close-btn" aria-label="Close detail"><span>✕</span> <span class="close-text">Close</span></button>
+                    <div class="card-header">
+                        <div class="card-header-content">
+                            <div class="card-icon-wrap">${cat.icon}</div>
+                            <div class="card-name">${cat.name}</div>
+                            <div class="card-horizontal-logo">
+                                <img class="logo-card-light" src="${cat.logoLight}" alt="${cat.name} logo">
+                                <img class="logo-card-dark" src="${cat.logoDark}" alt="${cat.name} logo">
+                            </div>
+                            <div class="card-desc">${cat.shortDesc}</div>
+                            <div class="card-controller">Controlled by <span>${cat.controlledBy}</span></div>
+                        </div>
                     </div>
                     <div class="card-detail"></div>
                 `;
                 cardsGrid.appendChild(card);
-
-                // Bind close button
-                const closeBtn = card.querySelector('.card-close-btn');
-                closeBtn.addEventListener('click', (e) => {
+                card.querySelector('.card-close-btn').addEventListener('click', (e)=>{
                     e.stopPropagation();
                     closeDetail();
                 });
@@ -941,169 +714,111 @@
             const allCards = document.querySelectorAll('.category-card');
             let activeCardId = null;
 
-            // ==================== ACCORDION DETAIL ====================
-            function setDetailContent(card, catData) {
-                const detailDiv = card.querySelector('.card-detail');
-                detailDiv.innerHTML = `
+            function setDetailContent(card, catData){
+                const detail = card.querySelector('.card-detail');
+                detail.innerHTML = `
                     <div class="detail-body">${catData.fullDesc}</div>
                     <div class="detail-credits"><strong>Credits:</strong> ${catData.extendedCredits}</div>
                     <a href="${catData.link}" class="detail-enter-link">Enter ${catData.name} →</a>
                 `;
-                // No need to bind close button here, it's already in card
             }
-
-            function openDetail(card, catData) {
-                if (activeCardId && activeCardId !== catData.id) {
-                    const prevCard = document.querySelector(`.category-card[data-category-id="${activeCardId}"]`);
-                    if (prevCard) prevCard.classList.remove('active');
+            function openDetail(card, catData){
+                if(activeCardId && activeCardId !== catData.id){
+                    const prev = document.querySelector(`.category-card[data-category-id="${activeCardId}"]`);
+                    if(prev) prev.classList.remove('active');
                 }
                 setDetailContent(card, catData);
                 card.classList.add('active');
                 activeCardId = catData.id;
-                setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+                setTimeout(()=> card.scrollIntoView({behavior:'smooth', block:'nearest'}), 100);
             }
-
-            function closeDetail() {
-                if (activeCardId) {
+            function closeDetail(){
+                if(activeCardId){
                     const card = document.querySelector(`.category-card[data-category-id="${activeCardId}"]`);
-                    if (card) card.classList.remove('active');
+                    if(card) card.classList.remove('active');
                 }
                 activeCardId = null;
             }
 
-            allCards.forEach(card => {
-                card.addEventListener('click', (e) => {
-                    // Don't toggle if clicking close button or link
-                    if (e.target.closest('.card-close-btn') || e.target.closest('.detail-enter-link')) return;
+            allCards.forEach(card=>{
+                card.addEventListener('click', (e)=>{
+                    if(e.target.closest('.card-close-btn') || e.target.closest('.detail-enter-link')) return;
                     const catId = card.dataset.categoryId;
-                    if (activeCardId === catId) {
-                        closeDetail();
-                    } else {
-                        const catData = categoryData.find(c => c.id === catId);
-                        if (catData) openDetail(card, catData);
+                    if(activeCardId === catId) closeDetail();
+                    else {
+                        const catData = categoryData.find(c=>c.id===catId);
+                        if(catData) openDetail(card, catData);
                     }
                 });
-                card.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        card.click();
-                    }
-                });
+                card.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); card.click(); } });
             });
 
-            // ==================== SPLASH (3.2s) ====================
-            const SPLASH_DURATION = 3200;
-            const SPLASH_FADE = 500;
-            let splashDismissed = false;
-            let splashStart = Date.now();
-            let timerId, progressId;
-
-            function dismissSplash() {
-                if (splashDismissed) return;
+            // Splash 3.2s
+            const SPLASH_DUR = 3200, FADE = 500;
+            let splashDismissed = false, splashStart = Date.now(), timerId, progId;
+            function dismissSplash(){
+                if(splashDismissed) return;
                 splashDismissed = true;
-                clearTimeout(timerId);
-                clearInterval(progressId);
+                clearTimeout(timerId); clearInterval(progId);
                 splashOverlay.classList.add('dismissing');
                 document.body.classList.remove('splash-active');
                 mainLayout.classList.add('revealed');
-                setTimeout(() => {
-                    splashOverlay.classList.add('dismissed');
-                    splashOverlay.setAttribute('aria-hidden', 'true');
-                }, SPLASH_FADE);
-
-                const totalCards = allCards.length;
-                const staggerMs = 70;
-                setTimeout(() => {
-                    allCards.forEach((card, i) => {
-                        setTimeout(() => card.classList.add('card-revealed'), i * staggerMs);
-                    });
-                    const totalRevealTime = (totalCards - 1) * staggerMs + 600;
-                    setTimeout(() => {
-                        cardsGrid.classList.add('reveal-complete');
-                    }, totalRevealTime);
+                setTimeout(()=>{ splashOverlay.classList.add('dismissed'); splashOverlay.setAttribute('aria-hidden','true'); }, FADE);
+                const total = allCards.length, stagger = 70;
+                setTimeout(()=>{
+                    allCards.forEach((c,i)=> setTimeout(()=> c.classList.add('card-revealed'), i*stagger) );
+                    setTimeout(()=> cardsGrid.classList.add('reveal-complete'), (total-1)*stagger+600 );
                 }, 200);
-
                 handleBrandIntroVisibility();
             }
-
-            function updateProgress() {
-                const elapsed = Date.now() - splashStart;
-                splashProgressBar.style.width = Math.min((elapsed / SPLASH_DURATION) * 100, 100) + '%';
-            }
-
-            timerId = setTimeout(dismissSplash, SPLASH_DURATION);
-            progressId = setInterval(updateProgress, 30);
+            function updateProgress(){ splashProgressBar.style.width = Math.min((Date.now()-splashStart)/SPLASH_DUR*100,100)+'%'; }
+            timerId = setTimeout(dismissSplash, SPLASH_DUR);
+            progId = setInterval(updateProgress, 30);
             updateProgress();
-            setTimeout(() => { if (!splashDismissed) splashHint.classList.add('visible'); }, 1000);
+            setTimeout(()=>{ if(!splashDismissed) splashHint.classList.add('visible'); }, 1000);
+            splashOverlay.addEventListener('click', ()=>{ if(!splashDismissed) dismissSplash(); });
+            window.addEventListener('wheel', e=>{ if(!splashDismissed && Math.abs(e.deltaY)>15) dismissSplash(); }, {passive:true});
+            let touchY=0;
+            window.addEventListener('touchstart', e=>{ if(!splashDismissed) touchY=e.touches[0].clientY; }, {passive:true});
+            window.addEventListener('touchmove', e=>{ if(!splashDismissed && Math.abs(e.touches[0].clientY-touchY)>25) dismissSplash(); }, {passive:true});
+            window.addEventListener('keydown', e=>{ if(!splashDismissed && ['Escape','Enter',' '].includes(e.key)){ e.preventDefault(); dismissSplash(); } });
 
-            splashOverlay.addEventListener('click', () => { if (!splashDismissed) dismissSplash(); });
-            window.addEventListener('wheel', (e) => {
-                if (!splashDismissed && Math.abs(e.deltaY) > 15) dismissSplash();
-            }, { passive: true });
-            let touchStartY = 0;
-            window.addEventListener('touchstart', (e) => { if (!splashDismissed) touchStartY = e.touches[0].clientY; }, { passive: true });
-            window.addEventListener('touchmove', (e) => {
-                if (!splashDismissed && Math.abs(e.touches[0].clientY - touchStartY) > 25) dismissSplash();
-            }, { passive: true });
-            window.addEventListener('keydown', (e) => {
-                if (!splashDismissed && ['Escape', 'Enter', ' '].includes(e.key)) {
-                    e.preventDefault();
-                    dismissSplash();
-                }
-            });
-
-            // ==================== HEADER SCROLL ====================
-            function handleScroll() {
-                siteHeader.classList.toggle('scrolled-header', window.scrollY > 30);
-            }
-            window.addEventListener('scroll', handleScroll, { passive: true });
+            // Header scroll
+            function handleScroll(){ siteHeader.classList.toggle('scrolled-header', window.scrollY>30); }
+            window.addEventListener('scroll', handleScroll, {passive:true});
             handleScroll();
 
-            // ==================== BRAND INTRO (faster, soft wall) ====================
-            let introCollapsed = false;
-            let topReachCount = 0;
-            let hasLeftTop = true;
-            const COLLAPSE_THRESHOLD = 40; // px (quicker hide)
-            const TOP_ZONE = 8;
-            const LEAVE_TOP_ZONE = 40;
-
-            function handleBrandIntroVisibility() {
+            // Brand intro (quick collapse + snap to cards)
+            let introCollapsed = false, topReach=0, hasLeftTop=true;
+            const COLLAPSE = 40, TOP_ZONE=8, LEAVE_TOP=40;
+            function handleBrandIntroVisibility(){
                 const sy = window.scrollY;
-
-                if (sy <= TOP_ZONE) {
-                    if (hasLeftTop && introCollapsed) {
-                        topReachCount++;
-                        hasLeftTop = false;
-                    }
-                } else if (sy > LEAVE_TOP_ZONE) {
-                    hasLeftTop = true;
-                }
-
-                if (sy > COLLAPSE_THRESHOLD && !introCollapsed) {
+                if(sy <= TOP_ZONE){
+                    if(hasLeftTop && introCollapsed){ topReach++; hasLeftTop=false; }
+                }else if(sy > LEAVE_TOP){ hasLeftTop=true; }
+                if(sy > COLLAPSE && !introCollapsed){
                     brandIntro.classList.add('collapsed');
                     introCollapsed = true;
-                    topReachCount = 0;
-                    hasLeftTop = true;
+                    topReach=0; hasLeftTop=true;
+                    // Snap to cards grid
+                    setTimeout(()=>{
+                        if(introCollapsed && window.scrollY > cardsGrid.getBoundingClientRect().top + window.scrollY - 10){
+                            cardsGrid.scrollIntoView({behavior:'smooth', block:'start'});
+                        }
+                    }, 50);
                 }
-
-                if (introCollapsed && topReachCount >= 2) {
+                if(introCollapsed && topReach>=2){
                     brandIntro.classList.remove('collapsed');
                     introCollapsed = false;
-                    topReachCount = 0;
-                    hasLeftTop = false;
+                    topReach=0; hasLeftTop=false;
                 }
-
-                if (!introCollapsed && sy <= TOP_ZONE) {
-                    topReachCount = 0;
-                }
+                if(!introCollapsed && sy<=TOP_ZONE) topReach=0;
             }
-
-            window.addEventListener('scroll', handleBrandIntroVisibility, { passive: true });
+            window.addEventListener('scroll', handleBrandIntroVisibility, {passive:true});
             handleBrandIntroVisibility();
 
-            // ==================== PLACEHOLDERS ====================
-            menuBtn.addEventListener('click', () => alert('Navigation menu placeholder.'));
-            accountBtn.addEventListener('click', () => alert('Account sign-in placeholder.'));
+            menuBtn.addEventListener('click', ()=> alert('Navigation menu placeholder.'));
+            accountBtn.addEventListener('click', ()=> alert('Account sign-in placeholder.'));
         })();
     </script>
 </body>
