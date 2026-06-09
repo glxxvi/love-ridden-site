@@ -195,7 +195,7 @@
             border-radius: 0 2px 2px 0;
         }
 
-        /* ---------- Main Layout (hidden during splash) ---------- */
+        /* ---------- Main Layout ---------- */
         .main-layout {
             opacity: 0;
             transition: opacity 0.5s ease 0.15s;
@@ -208,7 +208,7 @@
             pointer-events: none;
         }
 
-        /* ---------- Header (grid centered) ---------- */
+        /* ---------- Header ---------- */
         .site-header {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
@@ -259,7 +259,7 @@
         body.dark .logo-header-dark,
         body.amoled .logo-header-dark { display: block; }
 
-        /* Pill buttons (uniform style) */
+        /* Pill buttons – no tilt */
         .pill-btn {
             display: inline-flex;
             align-items: center;
@@ -302,21 +302,19 @@
             border: none;
             cursor: pointer;
             font-size: 1.1rem;
-            transition: all 0.2s;
+            transition: background 0.2s, transform 0.2s;
             color: var(--text-primary);
             -webkit-tap-highlight-color: transparent;
             flex-shrink: 0;
         }
         .theme-toggle-pill:hover {
             background: var(--pill-hover);
-            transform: rotate(15deg);
+            transform: scale(1.05);
         }
         .theme-toggle-pill:active {
-            transform: scale(0.9) rotate(15deg);
-            transition: transform 0.1s;
+            transform: scale(0.95);
         }
 
-        /* Collapse buttons to icons on small screens */
         @media (max-width: 640px) {
             .pill-btn .btn-text {
                 display: none;
@@ -338,7 +336,7 @@
             }
         }
 
-        /* ---------- Brand Description Section ---------- */
+        /* ---------- Brand Intro (collapsible) ---------- */
         .brand-intro {
             max-width: 900px;
             margin: 0 auto;
@@ -347,7 +345,16 @@
             font-size: 1.1rem;
             color: var(--text-secondary);
             line-height: 1.8;
-            transition: opacity 0.4s;
+            transition: max-height 0.4s ease, opacity 0.4s ease, padding 0.4s ease, margin 0.4s ease;
+            overflow: hidden;
+        }
+        .brand-intro.collapsed {
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-top: 0;
+            margin-bottom: 0;
         }
         .brand-intro h2 {
             font-size: 1.6rem;
@@ -374,10 +381,6 @@
             }
             .main-content {
                 padding: 1rem var(--space-sm) 1.5rem;
-            }
-            .brand-intro {
-                padding: 1.5rem var(--space-sm) 0.5rem;
-                font-size: 1rem;
             }
         }
         .category-card {
@@ -446,23 +449,22 @@
             opacity: 0.9;
         }
 
-        /* ---------- Inline Detail Row (expands in grid) ---------- */
-        .detail-row {
-            grid-column: 1 / -1;
-            background: var(--detail-bg);
-            border: 1.5px solid var(--detail-border);
-            border-radius: var(--radius);
-            padding: var(--space-md);
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
+        /* ---------- Detail inside card (accordion) ---------- */
+        .card-detail {
+            max-height: 0;
             opacity: 0;
-            transform: translateY(-10px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            overflow: hidden;
+            transition: max-height 0.35s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.3s ease, margin 0.35s;
+            margin-top: 0;
+            border-top: 1px solid transparent;
+            padding-top: 0;
         }
-        .detail-row.visible {
+        .category-card.active .card-detail {
+            max-height: 400px; /* large enough for content */
             opacity: 1;
-            transform: translateY(0);
+            margin-top: 1rem;
+            border-top-color: var(--surface-border);
+            padding-top: 1rem;
         }
         .detail-header-row {
             display: flex;
@@ -513,6 +515,7 @@
             font-size: 0.95rem;
             color: var(--text-secondary);
             line-height: 1.7;
+            margin-bottom: 0.75rem;
         }
         .detail-credits {
             font-size: 0.8rem;
@@ -520,6 +523,7 @@
             text-transform: uppercase;
             opacity: 0.7;
             font-weight: 500;
+            margin-bottom: 0.75rem;
         }
         .detail-credits strong {
             color: var(--text-primary);
@@ -529,7 +533,6 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            align-self: flex-start;
             padding: var(--space-sm) var(--space-md);
             border-radius: var(--radius);
             background: var(--accent);
@@ -612,7 +615,6 @@
         .category-card:nth-child(5) { transition-delay: 0.33s; }
         .category-card:nth-child(6) { transition-delay: 0.4s; }
     </style>
-    <!-- Inline theme init to prevent flash -->
     <script>
         (function() {
             const saved = localStorage.getItem('theme');
@@ -657,11 +659,40 @@
         </header>
 
         <main class="main-content" id="mainContent">
-            <!-- Brand Description -->
-            <section class="brand-intro">
-                <h2></h2>
-                <p>Founded in 2018 as a surivial pact between two young creators, Love Ridden has grown into multiple arenas. Not only are we home to the foremost independent record label in East Texas, we provide services such as; Photography, Videography, Studio Sessions, Mixing and Mastering, as well as Graphic Design. Love is dedicated to every project we undertake.</p>                    <h4>Credits</h4>
-                    <p>Site by <strong>Gabriel Hoffman</strong>, Powered by </<strong>Hugo</strong>p>
+            <!-- Brand Description (collapsible) -->
+            <section class="brand-intro" id="brandIntro">
+                <h2>Love Ridden</h2>
+                <p>Founded in 2018 as a survival pact between two young creators, Love Ridden has grown into multiple arenas. Not only are we home to the foremost independent record label in East Texas, we provide services such as Photography, Videography, Studio Sessions, Mixing and Mastering, as well as Graphic Design. Love is dedicated to every project we undertake.</p>
+            </section>
+
+            <!-- Cards Grid -->
+            <div class="cards-grid" id="cardsGrid">
+                <!-- Cards rendered by JS -->
+            </div>
+        </main>
+
+        <footer class="site-footer">
+            <div class="footer-inner">
+                <div class="footer-col">
+                    <h4>Love Ridden</h4>
+                    <p>Seeking the truth in artistic creation. Based in East Texas.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Sub-Brands</h4>
+                    <a href="/records">Records</a>
+                    <a href="/wolf-den">The Wolf Den</a>
+                    <a href="/hotseat">Hotseat</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Info</h4>
+                    <a href="#">About</a>
+                    <a href="#">Contact</a>
+                    <a href="#">Press</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Credits</h4>
+                    <p>Site by <strong>Gabriel Hoffman</strong></p>
+                    <p>Powered by <strong>Hugo</strong></p>
                     <p>Design &amp; Development</p>
                     <p>© <span id="footerYear"></span> Love Ridden</p>
                 </div>
@@ -693,7 +724,7 @@
                     icon: '🐺',
                     shortDesc: 'The ultimate tool for athletic history in San Augustine County.',
                     controlledBy: 'Gabriel Hoffman',
-                    fullDesc: 'The Wolf Den is a comprehensive digital archive preserving the rich athletic legacy of San Augustine County. From historic game annals to completed rosters from the last 15 yeats, it serves as both a research tool and a community treasure.',
+                    fullDesc: 'The Wolf Den is a comprehensive digital archive preserving the rich athletic legacy of San Augustine County. From historic game annals to completed rosters from the last 15 years, it serves as both a research tool and a community treasure.',
                     extendedCredits: 'Curator & Developer: Gabriel Hoffman · Data Contributors: San Augustine Athletics, UIL, PigskinPrep, MaxPreps, Smoaky.com · Archival Support: Community Volunteers',
                     link: '/wolf-den',
                 },
@@ -721,6 +752,7 @@
             const menuBtn = document.getElementById('menuBtn');
             const accountBtn = document.getElementById('accountBtn');
             const footerYear = document.getElementById('footerYear');
+            const brandIntro = document.getElementById('brandIntro');
 
             if (footerYear) footerYear.textContent = new Date().getFullYear();
 
@@ -769,19 +801,18 @@
                     <div class="card-name">${cat.name}</div>
                     <div class="card-desc">${cat.shortDesc}</div>
                     <div class="card-controller">Controlled by <span>${cat.controlledBy}</span></div>
+                    <div class="card-detail"></div>
                 `;
                 cardsGrid.appendChild(card);
             });
 
             const allCards = document.querySelectorAll('.category-card');
-            let activeDetailRow = null;
             let activeCardId = null;
 
-            // ==================== INLINE DETAIL ROW ====================
-            function createDetailRow(catData) {
-                const row = document.createElement('div');
-                row.className = 'detail-row';
-                row.innerHTML = `
+            // ==================== ACCORDION DETAIL LOGIC ====================
+            function setDetailContent(card, catData) {
+                const detailDiv = card.querySelector('.card-detail');
+                detailDiv.innerHTML = `
                     <div class="detail-header-row">
                         <div class="detail-title-group">
                             <div class="detail-icon">${catData.icon}</div>
@@ -793,71 +824,47 @@
                     <div class="detail-credits"><strong>Credits:</strong> ${catData.extendedCredits}</div>
                     <a href="${catData.link}" class="detail-enter-link">Enter ${catData.name} →</a>
                 `;
-                // Bind close button
-                row.querySelector('.detail-close-btn').addEventListener('click', (e) => {
+                detailDiv.querySelector('.detail-close-btn').addEventListener('click', (e) => {
                     e.stopPropagation();
-                    closeDetailRow();
+                    closeDetail();
                 });
-                // Make the row clickable to close? Only button closes.
-                return row;
             }
 
-            function openDetailRow(catData, afterCard) {
-                closeDetailRow(); // remove any existing
-                const row = createDetailRow(catData);
-                afterCard.insertAdjacentElement('afterend', row);
-                // Force reflow then add visible class
-                requestAnimationFrame(() => {
-                    row.classList.add('visible');
-                });
-                activeDetailRow = row;
+            function openDetail(card, catData) {
+                // Close any other open card
+                if (activeCardId && activeCardId !== catData.id) {
+                    const prevCard = document.querySelector(`.category-card[data-category-id="${activeCardId}"]`);
+                    if (prevCard) prevCard.classList.remove('active');
+                }
+                setDetailContent(card, catData);
+                card.classList.add('active');
                 activeCardId = catData.id;
-                updateCardActiveStates();
-
-                // Scroll detail into view smoothly
+                // Scroll to keep the card in view
                 setTimeout(() => {
-                    row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }, 150);
+                    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
             }
 
-            function closeDetailRow() {
-                if (activeDetailRow) {
-                    activeDetailRow.classList.remove('visible');
-                    const row = activeDetailRow;
-                    row.addEventListener('transitionend', function handler() {
-                        row.removeEventListener('transitionend', handler);
-                        if (row.parentNode) row.parentNode.removeChild(row);
-                    });
-                    // Fallback removal after transition
-                    setTimeout(() => {
-                        if (row.parentNode) row.parentNode.removeChild(row);
-                    }, 350);
-                    activeDetailRow = null;
+            function closeDetail() {
+                if (activeCardId) {
+                    const card = document.querySelector(`.category-card[data-category-id="${activeCardId}"]`);
+                    if (card) card.classList.remove('active');
                 }
                 activeCardId = null;
-                updateCardActiveStates();
-            }
-
-            function updateCardActiveStates() {
-                allCards.forEach(card => {
-                    if (card.dataset.categoryId === activeCardId) {
-                        card.classList.add('active');
-                    } else {
-                        card.classList.remove('active');
-                    }
-                });
             }
 
             // Card click handler
             allCards.forEach(card => {
-                card.addEventListener('click', () => {
+                card.addEventListener('click', (e) => {
+                    // Prevent closing when clicking inside detail (except close button)
+                    if (e.target.closest('.detail-close-btn')) return;
                     const catId = card.dataset.categoryId;
                     if (activeCardId === catId) {
-                        closeDetailRow();
+                        closeDetail();
                     } else {
                         const catData = categoryData.find(c => c.id === catId);
                         if (catData) {
-                            openDetailRow(catData, card);
+                            openDetail(card, catData);
                         }
                     }
                 });
@@ -870,7 +877,7 @@
             });
 
             // ==================== SPLASH (2.23 seconds) ====================
-            const SPLASH_DURATION = 2230; // 2.23s
+            const SPLASH_DURATION = 2230;
             const SPLASH_FADE = 500;
             let splashDismissed = false;
             let splashStart = Date.now();
@@ -890,7 +897,6 @@
                     splashOverlay.setAttribute('aria-hidden', 'true');
                 }, SPLASH_FADE);
 
-                // Reveal cards with stagger
                 setTimeout(() => {
                     allCards.forEach((card, i) => {
                         setTimeout(() => card.classList.add('card-revealed'), i * 70);
@@ -934,6 +940,19 @@
             }
             window.addEventListener('scroll', handleScroll, { passive: true });
             handleScroll();
+
+            // ==================== BRAND INTRO COLLAPSE ON SCROLL ====================
+            function handleBrandIntroVisibility() {
+                const rect = brandIntro.getBoundingClientRect();
+                const isVisible = rect.bottom > 0 && rect.top < window.innerHeight;
+                if (!isVisible) {
+                    brandIntro.classList.add('collapsed');
+                } else {
+                    brandIntro.classList.remove('collapsed');
+                }
+            }
+            window.addEventListener('scroll', handleBrandIntroVisibility, { passive: true });
+            handleBrandIntroVisibility();
 
             // ==================== PLACEHOLDERS ====================
             menuBtn.addEventListener('click', () => alert('Navigation menu placeholder.'));
