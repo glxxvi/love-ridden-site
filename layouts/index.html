@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Love Ridden</title>
     <style>
-        /* ---------- Prevent flash of wrong theme ---------- */
         :root {
             --bg-body: #faf9f6;
             --text-primary: #1a1a1a;
@@ -23,11 +22,9 @@
             --footer-text: #6a6a6a;
             --footer-border: #e0dbd2;
             --detail-bg: #fdfcf9;
-            --detail-border: #d2ccc2;
             --card-active-border: #1a1a1a;
             --card-active-shadow: 0 0 0 3px rgba(26,26,26,0.08);
             --overlay-bg: #faf9f6;
-            --splash-fade: rgba(250,249,246,0.97);
             --progress-bg: #d2ccc2;
             --progress-fill: #1a1a1a;
             --radius: 10px;
@@ -52,11 +49,9 @@
             --footer-text: #888;
             --footer-border: #2e2e2e;
             --detail-bg: #1a1a1a;
-            --detail-border: #333;
             --card-active-border: #e0e0e0;
             --card-active-shadow: 0 0 0 3px rgba(224,224,224,0.1);
             --overlay-bg: #121212;
-            --splash-fade: rgba(18,18,18,0.97);
             --progress-bg: #2e2e2e;
             --progress-fill: #e0e0e0;
         }
@@ -77,11 +72,9 @@
             --footer-text: #999;
             --footer-border: #1a1a1a;
             --detail-bg: #080808;
-            --detail-border: #1a1a1a;
             --card-active-border: #ffffff;
             --card-active-shadow: 0 0 0 3px rgba(255,255,255,0.15);
             --overlay-bg: #000000;
-            --splash-fade: rgba(0,0,0,0.97);
             --progress-bg: #1a1a1a;
             --progress-fill: #ffffff;
         }
@@ -103,7 +96,7 @@
             background: var(--bg-body);
             color: var(--text-primary);
             line-height: 1.6;
-            transition: background 0.35s ease, color 0.35s ease;
+            transition: background 0.3s ease, color 0.3s ease;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -142,8 +135,13 @@
             animation: logoPulse 3s ease-in-out infinite;
         }
         @keyframes logoPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.03); }
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.03);
+            }
         }
         .splash-overlay.dismissing .splash-logo-wrap {
             transform: scale(0.92);
@@ -154,13 +152,20 @@
             height: auto;
             display: block;
         }
-        .logo-splash-light { display: block; }
-        .logo-splash-dark { display: none; }
+        .logo-splash-light {
+            display: block;
+        }
+        .logo-splash-dark {
+            display: none;
+        }
         body.dark .logo-splash-light,
-        body.amoled .logo-splash-light { display: none; }
+        body.amoled .logo-splash-light {
+            display: none;
+        }
         body.dark .logo-splash-dark,
-        body.amoled .logo-splash-dark { display: block; }
-
+        body.amoled .logo-splash-dark {
+            display: block;
+        }
         .splash-hint {
             position: absolute;
             bottom: 8vh;
@@ -176,8 +181,13 @@
             animation: hintPulse 0.8s ease-in-out infinite;
         }
         @keyframes hintPulse {
-            0%,100% { opacity:0.5; }
-            50% { opacity:0.9; }
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 0.9;
+            }
         }
         .splash-progress {
             position: absolute;
@@ -230,15 +240,13 @@
             -webkit-backdrop-filter: blur(16px);
             box-shadow: 0 1px 0 var(--surface-border);
         }
-        .header-left {
+        .header-left,
+        .header-right {
             display: flex;
             align-items: center;
             gap: var(--space-sm);
         }
         .header-right {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
             justify-self: end;
         }
         .header-center {
@@ -252,14 +260,22 @@
             display: block;
             transition: height 0.3s;
         }
-        .logo-header-light { display: block; }
-        .logo-header-dark { display: none; }
+        .logo-header-light {
+            display: block;
+        }
+        .logo-header-dark {
+            display: none;
+        }
         body.dark .logo-header-light,
-        body.amoled .logo-header-light { display: none; }
+        body.amoled .logo-header-light {
+            display: none;
+        }
         body.dark .logo-header-dark,
-        body.amoled .logo-header-dark { display: block; }
+        body.amoled .logo-header-dark {
+            display: block;
+        }
 
-        /* Pill buttons – no tilt */
+        /* Pill buttons */
         .pill-btn {
             display: inline-flex;
             align-items: center;
@@ -273,7 +289,7 @@
             font-weight: 500;
             color: var(--text-primary);
             letter-spacing: 0.01em;
-            transition: all 0.2s ease;
+            transition: background 0.2s, transform 0.2s, color 0.3s;
             white-space: nowrap;
             text-decoration: none;
             -webkit-tap-highlight-color: transparent;
@@ -285,7 +301,6 @@
         }
         .pill-btn:active {
             transform: scale(0.96);
-            transition: transform 0.1s;
         }
         .pill-btn .icon {
             font-size: 1.1rem;
@@ -302,7 +317,7 @@
             border: none;
             cursor: pointer;
             font-size: 1.1rem;
-            transition: background 0.2s, transform 0.2s;
+            transition: background 0.2s, transform 0.2s, color 0.3s;
             color: var(--text-primary);
             -webkit-tap-highlight-color: transparent;
             flex-shrink: 0;
@@ -336,7 +351,7 @@
             }
         }
 
-        /* ---------- Brand Intro (collapsible on scroll) ---------- */
+        /* ---------- Brand Intro ---------- */
         .brand-intro {
             max-width: 900px;
             margin: 0 auto;
@@ -345,9 +360,12 @@
             font-size: 1.1rem;
             color: var(--text-secondary);
             line-height: 1.8;
-            transition: max-height 0.4s ease, opacity 0.4s ease, padding 0.4s ease, margin 0.4s ease;
+            transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.4s ease 0.05s,
+                padding 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                margin 0.45s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
-            max-height: 300px; /* large enough */
+            max-height: 300px;
             opacity: 1;
         }
         .brand-intro.collapsed {
@@ -378,20 +396,35 @@
             .main-content {
                 padding: 1rem var(--space-sm) 1.5rem;
             }
+            .brand-intro {
+                padding: 1.5rem var(--space-sm) 0.5rem;
+                font-size: 1rem;
+            }
         }
+
+        /* Category Card */
         .category-card {
             background: var(--surface);
             border: 1.5px solid var(--surface-border);
             border-radius: var(--radius);
             padding: var(--space-md);
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             box-shadow: var(--surface-shadow);
             -webkit-tap-highlight-color: transparent;
             user-select: none;
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
+            /* Reveal animation uses long transition */
+            transition: opacity 0.55s cubic-bezier(0.2, 0.9, 0.4, 1),
+                transform 0.55s cubic-bezier(0.2, 0.9, 0.4, 1);
+        }
+        /* After reveal, switch to fast transitions for interactivity */
+        .cards-grid.reveal-complete .category-card {
+            transition: border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.3s ease,
+                transform 0.2s ease;
         }
         .category-card:hover {
             transform: translateY(-3px);
@@ -407,12 +440,16 @@
             box-shadow: var(--card-active-shadow);
             background: var(--detail-bg);
         }
-        /* Card summary (hidden when active) */
-        .card-summary {
-            transition: opacity 0.25s;
+        .category-card.active:hover {
+            transform: none;
+            box-shadow: var(--card-active-shadow);
         }
-        .category-card.active .card-summary {
-            display: none;
+
+        /* Card summary */
+        .card-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
         }
         .card-icon-wrap {
             width: 52px;
@@ -424,6 +461,7 @@
             justify-content: center;
             font-size: 1.6rem;
             flex-shrink: 0;
+            transition: background 0.3s, color 0.3s;
         }
         .category-card.active .card-icon-wrap {
             background: var(--accent);
@@ -437,7 +475,6 @@
             font-size: 0.9rem;
             color: var(--text-secondary);
             line-height: 1.5;
-            flex-grow: 1;
         }
         .card-controller {
             font-size: 0.78rem;
@@ -445,6 +482,8 @@
             text-transform: uppercase;
             opacity: 0.7;
             font-weight: 500;
+            transition: opacity 0.25s, max-height 0.3s, margin 0.3s;
+            overflow: hidden;
         }
         .card-controller span {
             font-weight: 600;
@@ -452,65 +491,33 @@
             opacity: 0.9;
         }
 
-        /* Card detail (visible only when active) */
+        /* When active, hide short description & controller line */
+        .category-card.active .card-desc,
+        .category-card.active .card-controller {
+            opacity: 0;
+            max-height: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Card detail (expands inside card) */
         .card-detail {
-            display: none;
             max-height: 0;
             opacity: 0;
             overflow: hidden;
-            transition: max-height 0.35s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.3s ease, margin 0.35s;
+            transition: max-height 0.4s cubic-bezier(0.2, 0.9, 0.4, 1),
+                opacity 0.35s ease 0.05s,
+                margin 0.4s;
             margin-top: 0;
+            border-top: 1px solid transparent;
+            padding-top: 0;
         }
         .category-card.active .card-detail {
-            display: block;
-            max-height: 500px; /* enough for content */
+            max-height: 400px;
             opacity: 1;
-            margin-top: 0;
-        }
-        .detail-header-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        .detail-title-group {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        .detail-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: calc(var(--radius) * 0.8);
-            background: var(--accent);
-            color: var(--accent-text);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            flex-shrink: 0;
-        }
-        .detail-name {
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-        .detail-close-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: var(--space-sm) var(--space-md);
-            border-radius: var(--radius);
-            background: var(--pill-bg);
-            border: none;
-            cursor: pointer;
-            font-size: 0.85rem;
-            color: var(--text-primary);
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-        .detail-close-btn:hover {
-            background: var(--pill-hover);
+            margin-top: 0.25rem;
+            border-top-color: var(--surface-border);
+            padding-top: 1rem;
         }
         .detail-body {
             font-size: 0.95rem;
@@ -542,11 +549,30 @@
             font-weight: 600;
             font-size: 0.9rem;
             letter-spacing: 0.02em;
-            transition: all 0.2s;
+            transition: background 0.2s, transform 0.2s, filter 0.2s;
         }
         .detail-enter-link:hover {
             transform: translateY(-2px);
             filter: brightness(1.1);
+        }
+        .detail-close-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius);
+            background: var(--pill-bg);
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            transition: background 0.2s, color 0.3s;
+            font-family: inherit;
+            float: right;
+            margin-bottom: 0.5rem;
+        }
+        .detail-close-btn:hover {
+            background: var(--pill-hover);
         }
 
         /* ---------- Footer ---------- */
@@ -555,6 +581,7 @@
             border-top: 1px solid var(--footer-border);
             margin-top: 3rem;
             padding: 2.5rem var(--space-md) 2rem;
+            transition: background 0.3s, border-color 0.3s;
         }
         .footer-inner {
             max-width: 1100px;
@@ -592,6 +619,7 @@
             text-align: center;
             font-size: 0.78rem;
             color: var(--footer-text);
+            transition: border-color 0.3s;
         }
         .footer-bottom strong {
             font-weight: 600;
@@ -599,22 +627,33 @@
             opacity: 0.8;
         }
 
-        /* ---------- Scroll reveal cards ---------- */
+        /* Cards start hidden for reveal */
         .category-card {
             opacity: 0;
             transform: translateY(28px);
-            transition: opacity 0.55s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.55s cubic-bezier(0.2, 0.9, 0.4, 1), border-color 0.25s, box-shadow 0.25s, background 0.25s;
         }
         .category-card.card-revealed {
             opacity: 1;
             transform: translateY(0);
         }
-        .category-card:nth-child(1) { transition-delay: 0.05s; }
-        .category-card:nth-child(2) { transition-delay: 0.12s; }
-        .category-card:nth-child(3) { transition-delay: 0.19s; }
-        .category-card:nth-child(4) { transition-delay: 0.26s; }
-        .category-card:nth-child(5) { transition-delay: 0.33s; }
-        .category-card:nth-child(6) { transition-delay: 0.4s; }
+        .category-card:nth-child(1) {
+            transition-delay: 0.05s;
+        }
+        .category-card:nth-child(2) {
+            transition-delay: 0.12s;
+        }
+        .category-card:nth-child(3) {
+            transition-delay: 0.19s;
+        }
+        .category-card:nth-child(4) {
+            transition-delay: 0.26s;
+        }
+        .category-card:nth-child(5) {
+            transition-delay: 0.33s;
+        }
+        .category-card:nth-child(6) {
+            transition-delay: 0.4s;
+        }
     </style>
     <script>
         (function() {
@@ -660,15 +699,10 @@
         </header>
 
         <main class="main-content" id="mainContent">
-            <!-- Brand Description (collapsible on scroll) -->
             <section class="brand-intro" id="brandIntro">
                 <p>Founded in 2018 as a survival pact between two young creators, Love Ridden has grown into multiple arenas. Not only are we home to the foremost independent record label in East Texas, we provide services such as Photography, Videography, Studio Sessions, Mixing and Mastering, as well as Graphic Design. Love is dedicated to every project we undertake.</p>
             </section>
-
-            <!-- Cards Grid -->
-            <div class="cards-grid" id="cardsGrid">
-                <!-- Cards rendered by JS -->
-            </div>
+            <div class="cards-grid" id="cardsGrid"></div>
         </main>
 
         <footer class="site-footer">
@@ -707,38 +741,34 @@
     <script>
         (function() {
             // ==================== DATA ====================
-            const categoryData = [
-                {
-                    id: 'records',
-                    name: 'Records',
-                    icon: '🎵',
-                    shortDesc: 'Love Ridden Records, the home of East Texas\'s future.',
-                    controlledBy: 'Gabriel Hoffman & JaBryson Crane',
-                    fullDesc: 'Love Ridden Records is the flagship music imprint, dedicated to amplifying raw talent from East Texas and beyond. We focus on artist development, authentic storytelling, and high-fidelity production that honors the roots of each genre we touch.',
-                    extendedCredits: 'Co-Founder & A&R: Gabriel Hoffman · Co-Founder: JaBryson Crane · Engineering: Studio Collective · Mastering: Gabriel Hoffman · Art Direction: In-house',
-                    link: '/records',
-                },
-                {
-                    id: 'wolf-den',
-                    name: 'The Wolf Den',
-                    icon: '🐺',
-                    shortDesc: 'The ultimate tool for athletic history in San Augustine County.',
-                    controlledBy: 'Gabriel Hoffman',
-                    fullDesc: 'The Wolf Den is a comprehensive digital archive preserving the rich athletic legacy of San Augustine County. From historic game annals to completed rosters from the last 15 years, it serves as both a research tool and a community treasure.',
-                    extendedCredits: 'Curator & Developer: Gabriel Hoffman · Data Contributors: San Augustine Athletics, UIL, PigskinPrep, MaxPreps, Smoaky.com · Archival Support: Community Volunteers',
-                    link: '/wolf-den',
-                },
-                {
-                    id: 'hotseat',
-                    name: 'Hotseat',
-                    icon: '🔥',
-                    shortDesc: 'A collection of independent works by locals.',
-                    controlledBy: 'Gabriel Hoffman',
-                    fullDesc: 'Hotseat is a rotating showcase of independent creative projects — articles, short films, podcasts, and experimental art — all produced by local talent. It\'s a platform for voices that deserve a spotlight.',
-                    extendedCredits: 'Curator: Gabriel Hoffman · Featured Creators: Rotating roster of East Texas artists · Production Support: Studio 96',
-                    link: '/hotseat',
-                }
-            ];
+            const categoryData = [{
+                id: 'records',
+                name: 'Records',
+                icon: '🎵',
+                shortDesc: 'Love Ridden Records, the home of East Texas\'s future.',
+                controlledBy: 'Gabriel Hoffman & JaBryson Crane',
+                fullDesc: 'Love Ridden Records is the flagship music imprint, dedicated to amplifying raw talent from East Texas and beyond. We focus on artist development, authentic storytelling, and high-fidelity production that honors the roots of each genre we touch.',
+                extendedCredits: 'Co-Founder & A&R: Gabriel Hoffman · Co-Founder: JaBryson Crane · Engineering: Studio Collective · Mastering: Gabriel Hoffman · Art Direction: In-house',
+                link: '/records',
+            }, {
+                id: 'wolf-den',
+                name: 'The Wolf Den',
+                icon: '🐺',
+                shortDesc: 'The ultimate tool for athletic history in San Augustine County.',
+                controlledBy: 'Gabriel Hoffman',
+                fullDesc: 'The Wolf Den is a comprehensive digital archive preserving the rich athletic legacy of San Augustine County. From historic game annals to completed rosters from the last 15 years, it serves as both a research tool and a community treasure.',
+                extendedCredits: 'Curator & Developer: Gabriel Hoffman · Data Contributors: San Augustine Athletics, UIL, PigskinPrep, MaxPreps, Smoaky.com · Archival Support: Community Volunteers',
+                link: '/wolf-den',
+            }, {
+                id: 'hotseat',
+                name: 'Hotseat',
+                icon: '🔥',
+                shortDesc: 'A collection of independent works by locals.',
+                controlledBy: 'Gabriel Hoffman',
+                fullDesc: 'Hotseat is a rotating showcase of independent creative projects — articles, short films, podcasts, and experimental art — all produced by local talent. It\'s a platform for voices that deserve a spotlight.',
+                extendedCredits: 'Curator: Gabriel Hoffman · Featured Creators: Rotating roster of East Texas artists · Production Support: Studio 96',
+                link: '/hotseat',
+            }];
 
             // ==================== DOM REFS ====================
             const splashOverlay = document.getElementById('splashOverlay');
@@ -753,10 +783,9 @@
             const accountBtn = document.getElementById('accountBtn');
             const footerYear = document.getElementById('footerYear');
             const brandIntro = document.getElementById('brandIntro');
-
             if (footerYear) footerYear.textContent = new Date().getFullYear();
 
-            // ==================== THEME (Light / Dark / AMOLED) ====================
+            // ==================== THEME ====================
             const themeCycle = ['light', 'dark', 'amoled'];
             const themeIcons = { light: '☀️', dark: '🌙', amoled: '⬛' };
 
@@ -776,17 +805,15 @@
             function initTheme() {
                 let saved = localStorage.getItem('theme');
                 if (!saved || !themeCycle.includes(saved)) {
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    saved = prefersDark ? 'dark' : 'light';
+                    saved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
                 }
                 applyTheme(saved);
             }
             initTheme();
-
             themeToggle.addEventListener('click', () => {
-                const current = [...document.body.classList].find(c => c === 'dark' || c === 'amoled') || 'light';
-                const next = getNextTheme(current);
-                applyTheme(next);
+                const current = [...document.body.classList].find(c => c === 'dark' || c === 'amoled') ||
+                    'light';
+                applyTheme(getNextTheme(current));
             });
 
             // ==================== BUILD CARDS ====================
@@ -811,17 +838,11 @@
             const allCards = document.querySelectorAll('.category-card');
             let activeCardId = null;
 
-            // ==================== ACCORDION DETAIL LOGIC ====================
+            // ==================== ACCORDION DETAIL ====================
             function setDetailContent(card, catData) {
                 const detailDiv = card.querySelector('.card-detail');
                 detailDiv.innerHTML = `
-                    <div class="detail-header-row">
-                        <div class="detail-title-group">
-                            <div class="detail-icon">${catData.icon}</div>
-                            <div class="detail-name">${catData.name}</div>
-                        </div>
-                        <button class="detail-close-btn" aria-label="Close detail">✕ Close</button>
-                    </div>
+                    <button class="detail-close-btn" aria-label="Close detail">✕ Close</button>
                     <div class="detail-body">${catData.fullDesc}</div>
                     <div class="detail-credits"><strong>Credits:</strong> ${catData.extendedCredits}</div>
                     <a href="${catData.link}" class="detail-enter-link">Enter ${catData.name} →</a>
@@ -834,20 +855,20 @@
 
             function openDetail(card, catData) {
                 if (activeCardId && activeCardId !== catData.id) {
-                    const prevCard = document.querySelector(`.category-card[data-category-id="${activeCardId}"]`);
+                    const prevCard = document.querySelector(
+                        `.category-card[data-category-id="${activeCardId}"]`);
                     if (prevCard) prevCard.classList.remove('active');
                 }
                 setDetailContent(card, catData);
                 card.classList.add('active');
                 activeCardId = catData.id;
-                setTimeout(() => {
-                    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }, 100);
+                setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
             }
 
             function closeDetail() {
                 if (activeCardId) {
-                    const card = document.querySelector(`.category-card[data-category-id="${activeCardId}"]`);
+                    const card = document.querySelector(
+                        `.category-card[data-category-id="${activeCardId}"]`);
                     if (card) card.classList.remove('active');
                 }
                 activeCardId = null;
@@ -855,15 +876,14 @@
 
             allCards.forEach(card => {
                 card.addEventListener('click', (e) => {
-                    if (e.target.closest('.detail-close-btn')) return;
+                    if (e.target.closest('.detail-close-btn') || e.target.closest(
+                            '.detail-enter-link')) return;
                     const catId = card.dataset.categoryId;
                     if (activeCardId === catId) {
                         closeDetail();
                     } else {
                         const catData = categoryData.find(c => c.id === catId);
-                        if (catData) {
-                            openDetail(card, catData);
-                        }
+                        if (catData) openDetail(card, catData);
                     }
                 });
                 card.addEventListener('keydown', (e) => {
@@ -874,7 +894,7 @@
                 });
             });
 
-            // ==================== SPLASH (3.2 seconds) ====================
+            // ==================== SPLASH (3.2s) ====================
             const SPLASH_DURATION = 3200;
             const SPLASH_FADE = 500;
             let splashDismissed = false;
@@ -889,47 +909,51 @@
                 splashOverlay.classList.add('dismissing');
                 document.body.classList.remove('splash-active');
                 mainLayout.classList.add('revealed');
-
                 setTimeout(() => {
                     splashOverlay.classList.add('dismissed');
                     splashOverlay.setAttribute('aria-hidden', 'true');
                 }, SPLASH_FADE);
 
+                // Staggered card reveal
+                const totalCards = allCards.length;
+                const staggerMs = 70;
                 setTimeout(() => {
                     allCards.forEach((card, i) => {
-                        setTimeout(() => card.classList.add('card-revealed'), i * 70);
+                        setTimeout(() => card.classList.add('card-revealed'), i * staggerMs);
                     });
+                    // After all reveals complete, switch to fast transitions
+                    const totalRevealTime = (totalCards - 1) * staggerMs + 600;
+                    setTimeout(() => {
+                        cardsGrid.classList.add('reveal-complete');
+                    }, totalRevealTime);
                 }, 200);
 
-                // Check scroll position immediately after splash dismiss
+                // Allow brand intro scroll logic to evaluate
                 handleBrandIntroVisibility();
             }
 
             function updateProgress() {
                 const elapsed = Date.now() - splashStart;
-                const pct = Math.min((elapsed / SPLASH_DURATION) * 100, 100);
-                splashProgressBar.style.width = pct + '%';
+                splashProgressBar.style.width = Math.min((elapsed / SPLASH_DURATION) * 100, 100) + '%';
             }
 
             timerId = setTimeout(dismissSplash, SPLASH_DURATION);
             progressId = setInterval(updateProgress, 30);
             updateProgress();
-
-            setTimeout(() => {
-                if (!splashDismissed) splashHint.classList.add('visible');
-            }, 1000);
+            setTimeout(() => { if (!splashDismissed) splashHint.classList.add('visible'); }, 1000);
 
             splashOverlay.addEventListener('click', () => { if (!splashDismissed) dismissSplash(); });
-            window.addEventListener('wheel', function onWheel(e) {
+            window.addEventListener('wheel', (e) => {
                 if (!splashDismissed && Math.abs(e.deltaY) > 15) dismissSplash();
             }, { passive: true });
             let touchStartY = 0;
-            window.addEventListener('touchstart', e => { if (!splashDismissed) touchStartY = e.touches[0].clientY; }, { passive: true });
-            window.addEventListener('touchmove', e => {
+            window.addEventListener('touchstart', (e) => { if (!splashDismissed) touchStartY = e.touches[0]
+                    .clientY; }, { passive: true });
+            window.addEventListener('touchmove', (e) => {
                 if (!splashDismissed && Math.abs(e.touches[0].clientY - touchStartY) > 25) dismissSplash();
             }, { passive: true });
-            window.addEventListener('keydown', e => {
-                if (!splashDismissed && (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ')) {
+            window.addEventListener('keydown', (e) => {
+                if (!splashDismissed && ['Escape', 'Enter', ' '].includes(e.key)) {
                     e.preventDefault();
                     dismissSplash();
                 }
@@ -942,15 +966,49 @@
             window.addEventListener('scroll', handleScroll, { passive: true });
             handleScroll();
 
-            // ==================== BRAND INTRO COLLAPSE ON SCROLL ====================
+            // ==================== BRAND INTRO SOFT WALL ====================
+            let introCollapsed = false;
+            let topReachCount = 0;
+            let hasLeftTop = true;
+            const COLLAPSE_THRESHOLD = 100; // px scrolled before intro hides
+            const TOP_ZONE = 8; // px from top considered "at top"
+            const LEAVE_TOP_ZONE = 40; // px from top to count as "left top"
+
             function handleBrandIntroVisibility() {
-                // Collapse immediately when scrolled away from top, show only at very top
-                if (window.scrollY <= 0) {
-                    brandIntro.classList.remove('collapsed');
-                } else {
+                const sy = window.scrollY;
+
+                // Track top reaches
+                if (sy <= TOP_ZONE) {
+                    if (hasLeftTop && introCollapsed) {
+                        topReachCount++;
+                        hasLeftTop = false;
+                    }
+                } else if (sy > LEAVE_TOP_ZONE) {
+                    hasLeftTop = true;
+                }
+
+                // Collapse on scroll down past threshold
+                if (sy > COLLAPSE_THRESHOLD && !introCollapsed) {
                     brandIntro.classList.add('collapsed');
+                    introCollapsed = true;
+                    topReachCount = 0;
+                    hasLeftTop = true;
+                }
+
+                // Reveal on second bump at top
+                if (introCollapsed && topReachCount >= 2) {
+                    brandIntro.classList.remove('collapsed');
+                    introCollapsed = false;
+                    topReachCount = 0;
+                    hasLeftTop = false;
+                }
+
+                // Edge case: if user is at top and intro is visible, reset counters
+                if (!introCollapsed && sy <= TOP_ZONE) {
+                    topReachCount = 0;
                 }
             }
+
             window.addEventListener('scroll', handleBrandIntroVisibility, { passive: true });
             handleBrandIntroVisibility();
 
