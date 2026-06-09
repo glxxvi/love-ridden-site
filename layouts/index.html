@@ -31,6 +31,7 @@
             --space-sm: 0.75rem;
             --space-md: 1.25rem;
             --font-stack: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'SF Pro Display', sans-serif;
+            --pastel-red: rgba(255, 179, 186, 0.8);
         }
         body.dark {
             --bg-body: #121212;
@@ -54,6 +55,7 @@
             --overlay-bg: #121212;
             --progress-bg: #2e2e2e;
             --progress-fill: #e0e0e0;
+            --pastel-red: rgba(255, 138, 128, 0.8);
         }
         body.amoled {
             --bg-body: #000000;
@@ -77,6 +79,7 @@
             --overlay-bg: #000000;
             --progress-bg: #1a1a1a;
             --progress-fill: #ffffff;
+            --pastel-red: rgba(255, 82, 82, 0.8);
         }
 
         *,
@@ -110,7 +113,7 @@
             position: fixed;
             inset: 0;
             z-index: 1000;
-            background: var(--overlay-bg);
+            background: var(--overlay-bg) url('courthouse-bg.JPEG') center/cover no-repeat;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -123,12 +126,22 @@
             user-select: none;
             padding: var(--space-md);
         }
+        .splash-overlay::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--overlay-bg);
+            opacity: 0.5;
+            z-index: 0;
+        }
         .splash-overlay.dismissed {
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
         }
         .splash-logo-wrap {
+            position: relative;
+            z-index: 1;
             width: min(70vw, 70vh, 620px);
             max-width: 90vw;
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s;
@@ -175,6 +188,7 @@
             opacity: 0;
             transition: opacity 0.6s;
             pointer-events: none;
+            z-index: 1;
         }
         .splash-hint.visible {
             opacity: 0.7;
@@ -196,6 +210,7 @@
             right: 0;
             height: 3px;
             background: var(--progress-bg);
+            z-index: 1;
         }
         .splash-progress-bar {
             height: 100%;
@@ -351,7 +366,7 @@
             }
         }
 
-        /* ---------- Brand Intro ---------- */
+        /* ---------- Brand Intro (quicker animation) ---------- */
         .brand-intro {
             max-width: 900px;
             margin: 0 auto;
@@ -360,10 +375,10 @@
             font-size: 1.1rem;
             color: var(--text-secondary);
             line-height: 1.8;
-            transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.4s ease 0.05s,
-                padding 0.45s cubic-bezier(0.4, 0, 0.2, 1),
-                margin 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.2s ease,
+                padding 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                margin 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
             max-height: 300px;
             opacity: 1;
@@ -404,6 +419,7 @@
 
         /* Category Card */
         .category-card {
+            position: relative;
             background: var(--surface);
             border: 1.5px solid var(--surface-border);
             border-radius: var(--radius);
@@ -415,11 +431,9 @@
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
-            /* Reveal animation uses long transition */
             transition: opacity 0.55s cubic-bezier(0.2, 0.9, 0.4, 1),
                 transform 0.55s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
-        /* After reveal, switch to fast transitions for interactivity */
         .cards-grid.reveal-complete .category-card {
             transition: border-color 0.2s ease,
                 box-shadow 0.2s ease,
@@ -445,8 +459,63 @@
             box-shadow: var(--card-active-shadow);
         }
 
-        /* Card summary */
+        /* Close button positioned top-right */
+        .card-close-btn {
+            position: absolute;
+            top: var(--space-sm);
+            right: var(--space-sm);
+            background: var(--pill-bg);
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.4rem 0.6rem;
+            line-height: 1;
+            color: var(--text-primary);
+            transition: background 0.2s, color 0.3s;
+            display: none;
+            z-index: 5;
+        }
+        .category-card.active .card-close-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .card-close-btn:hover {
+            background: var(--pill-hover);
+        }
+        .card-close-btn .close-text {
+            font-size: 0.8rem;
+        }
+        @media (max-width: 640px) {
+            .card-close-btn .close-text {
+                display: none;
+            }
+        }
+
+        /* Banner behind header area */
+        .card-banner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: calc(52px + 2 * var(--space-md) + 1rem);
+            /* icon height + padding top/bottom roughly */
+            background: var(--pastel-red);
+            border-radius: var(--radius) var(--radius) 0 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .category-card.active .card-banner {
+            opacity: 1;
+        }
+
+        /* Card summary content (relative to keep above banner) */
         .card-summary {
+            position: relative;
+            z-index: 1;
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
@@ -467,10 +536,40 @@
             background: var(--accent);
             color: var(--accent-text);
         }
+
+        /* Card name and horizontal logo */
         .card-name {
             font-size: 1.25rem;
             font-weight: 600;
         }
+        .card-logo-horizontal {
+            display: none;
+            height: 30px;
+            width: auto;
+            max-width: 200px;
+            object-fit: contain;
+        }
+        .category-card.active .card-name {
+            display: none;
+        }
+        .category-card.active .card-logo-horizontal {
+            display: block;
+        }
+        .logo-card-light {
+            display: block;
+        }
+        .logo-card-dark {
+            display: none;
+        }
+        body.dark .logo-card-light,
+        body.amoled .logo-card-light {
+            display: none;
+        }
+        body.dark .logo-card-dark,
+        body.amoled .logo-card-dark {
+            display: block;
+        }
+
         .card-desc {
             font-size: 0.9rem;
             color: var(--text-secondary);
@@ -482,7 +581,7 @@
             text-transform: uppercase;
             opacity: 0.7;
             font-weight: 500;
-            transition: opacity 0.25s, max-height 0.3s, margin 0.3s;
+            transition: opacity 0.2s, max-height 0.3s, margin 0.3s;
             overflow: hidden;
         }
         .card-controller span {
@@ -490,18 +589,19 @@
             color: var(--text-primary);
             opacity: 0.9;
         }
-
-        /* When active, hide short description & controller line */
         .category-card.active .card-desc,
         .category-card.active .card-controller {
             opacity: 0;
             max-height: 0;
             margin: 0;
             padding: 0;
+            pointer-events: none;
         }
 
-        /* Card detail (expands inside card) */
+        /* Card detail (expands below header) */
         .card-detail {
+            position: relative;
+            z-index: 1;
             max-height: 0;
             opacity: 0;
             overflow: hidden;
@@ -554,25 +654,6 @@
         .detail-enter-link:hover {
             transform: translateY(-2px);
             filter: brightness(1.1);
-        }
-        .detail-close-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: var(--space-sm) var(--space-md);
-            border-radius: var(--radius);
-            background: var(--pill-bg);
-            border: none;
-            cursor: pointer;
-            font-size: 0.85rem;
-            color: var(--text-primary);
-            transition: background 0.2s, color 0.3s;
-            font-family: inherit;
-            float: right;
-            margin-bottom: 0.5rem;
-        }
-        .detail-close-btn:hover {
-            background: var(--pill-hover);
         }
 
         /* ---------- Footer ---------- */
@@ -627,7 +708,7 @@
             opacity: 0.8;
         }
 
-        /* Cards start hidden for reveal */
+        /* Cards reveal animation */
         .category-card {
             opacity: 0;
             transform: translateY(28px);
@@ -741,34 +822,44 @@
     <script>
         (function() {
             // ==================== DATA ====================
-            const categoryData = [{
-                id: 'records',
-                name: 'Records',
-                icon: '🎵',
-                shortDesc: 'Love Ridden Records, the home of East Texas\'s future.',
-                controlledBy: 'Gabriel Hoffman & JaBryson Crane',
-                fullDesc: 'Love Ridden Records is the flagship music imprint, dedicated to amplifying raw talent from East Texas and beyond. We focus on artist development, authentic storytelling, and high-fidelity production that honors the roots of each genre we touch.',
-                extendedCredits: 'Co-Founder & A&R: Gabriel Hoffman · Co-Founder: JaBryson Crane · Engineering: Studio Collective · Mastering: Gabriel Hoffman · Art Direction: In-house',
-                link: '/records',
-            }, {
-                id: 'wolf-den',
-                name: 'The Wolf Den',
-                icon: '🐺',
-                shortDesc: 'The ultimate tool for athletic history in San Augustine County.',
-                controlledBy: 'Gabriel Hoffman',
-                fullDesc: 'The Wolf Den is a comprehensive digital archive preserving the rich athletic legacy of San Augustine County. From historic game annals to completed rosters from the last 15 years, it serves as both a research tool and a community treasure.',
-                extendedCredits: 'Curator & Developer: Gabriel Hoffman · Data Contributors: San Augustine Athletics, UIL, PigskinPrep, MaxPreps, Smoaky.com · Archival Support: Community Volunteers',
-                link: '/wolf-den',
-            }, {
-                id: 'hotseat',
-                name: 'Hotseat',
-                icon: '🔥',
-                shortDesc: 'A collection of independent works by locals.',
-                controlledBy: 'Gabriel Hoffman',
-                fullDesc: 'Hotseat is a rotating showcase of independent creative projects — articles, short films, podcasts, and experimental art — all produced by local talent. It\'s a platform for voices that deserve a spotlight.',
-                extendedCredits: 'Curator: Gabriel Hoffman · Featured Creators: Rotating roster of East Texas artists · Production Support: Studio 96',
-                link: '/hotseat',
-            }];
+            const categoryData = [
+                {
+                    id: 'records',
+                    name: 'Records',
+                    icon: '🎵',
+                    shortDesc: 'Love Ridden Records, the home of East Texas\'s future.',
+                    controlledBy: 'Gabriel Hoffman & JaBryson Crane',
+                    fullDesc: 'Love Ridden Records is the flagship music imprint, dedicated to amplifying raw talent from East Texas and beyond. We focus on artist development, authentic storytelling, and high-fidelity production that honors the roots of each genre we touch.',
+                    extendedCredits: 'Co-Founder & A&R: Gabriel Hoffman · Co-Founder: JaBryson Crane · Engineering: Studio Collective · Mastering: Gabriel Hoffman · Art Direction: In-house',
+                    link: '/records',
+                    logoHorizontalLight: '/wordmark-black.PNG',
+                    logoHorizontalDark: '/wordmark-white.PNG'
+                },
+                {
+                    id: 'wolf-den',
+                    name: 'The Wolf Den',
+                    icon: '🐺',
+                    shortDesc: 'The ultimate tool for athletic history in San Augustine County.',
+                    controlledBy: 'Gabriel Hoffman',
+                    fullDesc: 'The Wolf Den is a comprehensive digital archive preserving the rich athletic legacy of San Augustine County. From historic game annals to completed rosters from the last 15 years, it serves as both a research tool and a community treasure.',
+                    extendedCredits: 'Curator & Developer: Gabriel Hoffman · Data Contributors: San Augustine Athletics, UIL, PigskinPrep, MaxPreps, Smoaky.com · Archival Support: Community Volunteers',
+                    link: '/wolf-den',
+                    logoHorizontalLight: '/wordmark-black.PNG',
+                    logoHorizontalDark: '/wordmark-white.PNG'
+                },
+                {
+                    id: 'hotseat',
+                    name: 'Hotseat',
+                    icon: '🔥',
+                    shortDesc: 'A collection of independent works by locals.',
+                    controlledBy: 'Gabriel Hoffman',
+                    fullDesc: 'Hotseat is a rotating showcase of independent creative projects — articles, short films, podcasts, and experimental art — all produced by local talent. It\'s a platform for voices that deserve a spotlight.',
+                    extendedCredits: 'Curator: Gabriel Hoffman · Featured Creators: Rotating roster of East Texas artists · Production Support: Studio 96',
+                    link: '/hotseat',
+                    logoHorizontalLight: '/wordmark-black.PNG',
+                    logoHorizontalDark: '/wordmark-white.PNG'
+                }
+            ];
 
             // ==================== DOM REFS ====================
             const splashOverlay = document.getElementById('splashOverlay');
@@ -811,8 +902,7 @@
             }
             initTheme();
             themeToggle.addEventListener('click', () => {
-                const current = [...document.body.classList].find(c => c === 'dark' || c === 'amoled') ||
-                    'light';
+                const current = [...document.body.classList].find(c => c === 'dark' || c === 'amoled') || 'light';
                 applyTheme(getNextTheme(current));
             });
 
@@ -824,15 +914,28 @@
                 card.setAttribute('role', 'button');
                 card.setAttribute('tabindex', '0');
                 card.innerHTML = `
+                    <div class="card-banner"></div>
+                    <button class="card-close-btn" aria-label="Close detail">
+                        <span>✕</span> <span class="close-text">Close</span>
+                    </button>
                     <div class="card-summary">
                         <div class="card-icon-wrap">${cat.icon}</div>
                         <div class="card-name">${cat.name}</div>
+                        <img class="card-logo-horizontal logo-card-light" src="${cat.logoHorizontalLight}" alt="${cat.name} logo">
+                        <img class="card-logo-horizontal logo-card-dark" src="${cat.logoHorizontalDark}" alt="${cat.name} logo">
                         <div class="card-desc">${cat.shortDesc}</div>
                         <div class="card-controller">Controlled by <span>${cat.controlledBy}</span></div>
                     </div>
                     <div class="card-detail"></div>
                 `;
                 cardsGrid.appendChild(card);
+
+                // Bind close button
+                const closeBtn = card.querySelector('.card-close-btn');
+                closeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    closeDetail();
+                });
             });
 
             const allCards = document.querySelectorAll('.category-card');
@@ -842,21 +945,16 @@
             function setDetailContent(card, catData) {
                 const detailDiv = card.querySelector('.card-detail');
                 detailDiv.innerHTML = `
-                    <button class="detail-close-btn" aria-label="Close detail">✕ Close</button>
                     <div class="detail-body">${catData.fullDesc}</div>
                     <div class="detail-credits"><strong>Credits:</strong> ${catData.extendedCredits}</div>
                     <a href="${catData.link}" class="detail-enter-link">Enter ${catData.name} →</a>
                 `;
-                detailDiv.querySelector('.detail-close-btn').addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    closeDetail();
-                });
+                // No need to bind close button here, it's already in card
             }
 
             function openDetail(card, catData) {
                 if (activeCardId && activeCardId !== catData.id) {
-                    const prevCard = document.querySelector(
-                        `.category-card[data-category-id="${activeCardId}"]`);
+                    const prevCard = document.querySelector(`.category-card[data-category-id="${activeCardId}"]`);
                     if (prevCard) prevCard.classList.remove('active');
                 }
                 setDetailContent(card, catData);
@@ -867,8 +965,7 @@
 
             function closeDetail() {
                 if (activeCardId) {
-                    const card = document.querySelector(
-                        `.category-card[data-category-id="${activeCardId}"]`);
+                    const card = document.querySelector(`.category-card[data-category-id="${activeCardId}"]`);
                     if (card) card.classList.remove('active');
                 }
                 activeCardId = null;
@@ -876,8 +973,8 @@
 
             allCards.forEach(card => {
                 card.addEventListener('click', (e) => {
-                    if (e.target.closest('.detail-close-btn') || e.target.closest(
-                            '.detail-enter-link')) return;
+                    // Don't toggle if clicking close button or link
+                    if (e.target.closest('.card-close-btn') || e.target.closest('.detail-enter-link')) return;
                     const catId = card.dataset.categoryId;
                     if (activeCardId === catId) {
                         closeDetail();
@@ -914,21 +1011,18 @@
                     splashOverlay.setAttribute('aria-hidden', 'true');
                 }, SPLASH_FADE);
 
-                // Staggered card reveal
                 const totalCards = allCards.length;
                 const staggerMs = 70;
                 setTimeout(() => {
                     allCards.forEach((card, i) => {
                         setTimeout(() => card.classList.add('card-revealed'), i * staggerMs);
                     });
-                    // After all reveals complete, switch to fast transitions
                     const totalRevealTime = (totalCards - 1) * staggerMs + 600;
                     setTimeout(() => {
                         cardsGrid.classList.add('reveal-complete');
                     }, totalRevealTime);
                 }, 200);
 
-                // Allow brand intro scroll logic to evaluate
                 handleBrandIntroVisibility();
             }
 
@@ -947,8 +1041,7 @@
                 if (!splashDismissed && Math.abs(e.deltaY) > 15) dismissSplash();
             }, { passive: true });
             let touchStartY = 0;
-            window.addEventListener('touchstart', (e) => { if (!splashDismissed) touchStartY = e.touches[0]
-                    .clientY; }, { passive: true });
+            window.addEventListener('touchstart', (e) => { if (!splashDismissed) touchStartY = e.touches[0].clientY; }, { passive: true });
             window.addEventListener('touchmove', (e) => {
                 if (!splashDismissed && Math.abs(e.touches[0].clientY - touchStartY) > 25) dismissSplash();
             }, { passive: true });
@@ -966,18 +1059,17 @@
             window.addEventListener('scroll', handleScroll, { passive: true });
             handleScroll();
 
-            // ==================== BRAND INTRO SOFT WALL ====================
+            // ==================== BRAND INTRO (faster, soft wall) ====================
             let introCollapsed = false;
             let topReachCount = 0;
             let hasLeftTop = true;
-            const COLLAPSE_THRESHOLD = 100; // px scrolled before intro hides
-            const TOP_ZONE = 8; // px from top considered "at top"
-            const LEAVE_TOP_ZONE = 40; // px from top to count as "left top"
+            const COLLAPSE_THRESHOLD = 40; // px (quicker hide)
+            const TOP_ZONE = 8;
+            const LEAVE_TOP_ZONE = 40;
 
             function handleBrandIntroVisibility() {
                 const sy = window.scrollY;
 
-                // Track top reaches
                 if (sy <= TOP_ZONE) {
                     if (hasLeftTop && introCollapsed) {
                         topReachCount++;
@@ -987,7 +1079,6 @@
                     hasLeftTop = true;
                 }
 
-                // Collapse on scroll down past threshold
                 if (sy > COLLAPSE_THRESHOLD && !introCollapsed) {
                     brandIntro.classList.add('collapsed');
                     introCollapsed = true;
@@ -995,7 +1086,6 @@
                     hasLeftTop = true;
                 }
 
-                // Reveal on second bump at top
                 if (introCollapsed && topReachCount >= 2) {
                     brandIntro.classList.remove('collapsed');
                     introCollapsed = false;
@@ -1003,7 +1093,6 @@
                     hasLeftTop = false;
                 }
 
-                // Edge case: if user is at top and intro is visible, reset counters
                 if (!introCollapsed && sy <= TOP_ZONE) {
                     topReachCount = 0;
                 }
