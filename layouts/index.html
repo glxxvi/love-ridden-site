@@ -5,16 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Love Ridden</title>
     <style>
-        /* ---------- CSS Variables for Light/Dark Mode ---------- */
+        /* ---------- CSS Variables (Light/Dark) ---------- */
         :root {
             --bg-body: #faf9f6;
             --text-primary: #1a1a1a;
-            --border-header: #eae6df;
             --tagline: #5a5a5a;
             --card-bg: #ffffff;
             --card-border: #eae6df;
-            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.05);
-            --card-hover-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.05);
+            --card-hover-shadow: 0 12px 24px rgba(0,0,0,0.05);
             --card-hover-border: #d4cdc2;
             --card-text: #4a4a4a;
             --link-color: #1a1a1a;
@@ -24,16 +23,14 @@
             --toggle-bg: #eae6df;
             --toggle-icon: #1a1a1a;
         }
-
         body.dark {
             --bg-body: #121212;
             --text-primary: #e0e0e0;
-            --border-header: #2c2c2c;
             --tagline: #b0b0b0;
             --card-bg: #1e1e1e;
             --card-border: #2c2c2c;
-            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
-            --card-hover-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+            --card-hover-shadow: 0 12px 24px rgba(0,0,0,0.4);
             --card-hover-border: #3a3a3a;
             --card-text: #c0c0c0;
             --link-color: #e0e0e0;
@@ -43,27 +40,24 @@
             --toggle-bg: #2c2c2c;
             --toggle-icon: #e0e0e0;
         }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
             background: var(--bg-body);
             color: var(--text-primary);
             line-height: 1.5;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background 0.3s, color 0.3s;
         }
-
-        /* Theme toggle button (top-right) */
+        /* Fixed toggle */
         .top-bar {
             position: fixed;
-            top: 1.5rem;
-            right: 1.5rem;
-            z-index: 100;
+            top: 1rem;
+            right: 1rem;
+            z-index: 200;
         }
         .theme-toggle {
             background: var(--toggle-bg);
@@ -75,19 +69,10 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            transition: background 0.2s;
-            color: var(--toggle-icon);
             backdrop-filter: blur(4px);
+            color: var(--toggle-icon);
         }
-        .theme-toggle:hover {
-            opacity: 0.8;
-        }
-        .theme-toggle span {
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        /* Hero section – full viewport height */
+        /* Hero - starts full screen, will shrink on scroll */
         .hero {
             height: 100vh;
             display: flex;
@@ -95,160 +80,126 @@
             justify-content: center;
             align-items: center;
             text-align: center;
+            transition: height 0.3s ease, padding 0.3s ease;
             padding: 2rem;
+            will-change: height;
         }
-
-        /* Logo switching (light/dark) */
+        /* Shrunk hero (scrolled past) */
+        .hero.scrolled {
+            height: auto;
+            padding: 1rem 2rem;
+            justify-content: flex-start;
+        }
         .logo {
             max-width: 280px;
             width: 80%;
             height: auto;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
+            transition: max-width 0.3s ease;
         }
-        .logo-light {
-            display: block;
+        .hero.scrolled .logo {
+            max-width: 120px;
+            margin-bottom: 0;
         }
-        .logo-dark {
-            display: none;
-        }
-        body.dark .logo-light {
-            display: none;
-        }
-        body.dark .logo-dark {
-            display: block;
-        }
+        .logo-light { display: block; }
+        .logo-dark { display: none; }
+        body.dark .logo-light { display: none; }
+        body.dark .logo-dark { display: block; }
 
         .site-tagline {
             font-size: 1.2rem;
             color: var(--tagline);
-            font-weight: 400;
-            max-width: 90%;
+            transition: opacity 0.2s, font-size 0.2s;
+        }
+        .hero.scrolled .site-tagline {
+            font-size: 0.9rem;
+            opacity: 0.8;
         }
 
-        /* Scroll‑reveal content */
+        /* Scroll content (cards) */
         .scroll-content {
             max-width: 1100px;
             margin: 0 auto;
-            padding: 4rem 1.5rem;
+            padding: 2rem 1.5rem 4rem;
         }
-
-        /* Cards grid – same as before, but with reveal animation */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 2rem;
-            margin-bottom: 3rem;
         }
-
         .card {
             background: var(--card-bg);
             padding: 1.5rem;
             border-radius: 20px;
+            border: 1px solid var(--card-border);
             box-shadow: var(--card-shadow);
             transition: all 0.2s ease;
-            border: 1px solid var(--card-border);
-            /* Reveal styles */
             opacity: 0;
             transform: translateY(30px);
-            transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1), background 0.2s, box-shadow 0.2s;
+            transition: opacity 0.6s cubic-bezier(0.2,0.9,0.4,1.1), transform 0.6s cubic-bezier(0.2,0.9,0.4,1.1), background 0.2s;
         }
-
         .card.revealed {
             opacity: 1;
             transform: translateY(0);
         }
-
-        /* Staggered delay for each card (optional) */
         .card:nth-child(1) { transition-delay: 0.05s; }
         .card:nth-child(2) { transition-delay: 0.15s; }
         .card:nth-child(3) { transition-delay: 0.25s; }
-
         .card:hover {
             transform: translateY(-4px);
             box-shadow: var(--card-hover-shadow);
             border-color: var(--card-hover-border);
         }
-
         .card h3 {
             font-size: 1.4rem;
             font-weight: 500;
             margin-bottom: 0.75rem;
         }
-
         .card p {
             color: var(--card-text);
             margin-bottom: 1.25rem;
-            font-size: 0.95rem;
         }
-
         .card-link {
             color: var(--link-color);
             text-decoration: none;
             font-weight: 500;
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
             border-bottom: 1px solid transparent;
             transition: border-color 0.2s;
         }
-
         .card-link:hover {
             border-bottom-color: var(--link-hover-border);
         }
-
         .footer-note {
             text-align: center;
-            margin-top: 3rem;
+            margin-top: 4rem;
             padding-top: 2rem;
             border-top: 1px solid var(--footer-border);
             color: var(--footer-text);
             font-size: 0.85rem;
         }
-
-        /* Mobile adjustments */
         @media (max-width: 700px) {
-            .top-bar {
-                top: 1rem;
-                right: 1rem;
-            }
-            .hero {
-                padding: 1rem;
-            }
-            .logo {
-                max-width: 200px;
-            }
-            .site-tagline {
-                font-size: 1rem;
-            }
-            .scroll-content {
-                padding: 2rem 1rem;
-            }
-            .cards-grid {
-                gap: 1.2rem;
-            }
-            .card {
-                padding: 1.2rem;
-            }
+            .logo { max-width: 200px; }
+            .hero.scrolled .logo { max-width: 80px; }
+            .site-tagline { font-size: 1rem; }
+            .hero.scrolled .site-tagline { font-size: 0.8rem; }
+            .cards-grid { gap: 1.2rem; }
         }
     </style>
 </head>
 <body>
     <div class="top-bar">
-        <button class="theme-toggle" id="theme-toggle" aria-label="Switch dark/light mode">
+        <button class="theme-toggle" id="theme-toggle">
             <span id="theme-icon">☀️</span>
             <span id="theme-text">Light</span>
         </button>
     </div>
 
-    <!-- Hero section: full screen, centered logo + tagline -->
-    <section class="hero">
-        <img class="logo logo-light" src="/wordmark-black.PNG" alt="Love Ridden Logo (light)">
-        <img class="logo logo-dark" src="/wordmark-white.PNG" alt="Love Ridden Logo (dark)">
+    <section class="hero" id="hero">
+        <img class="logo logo-light" src="/wordmark-black.PNG" alt="Love Ridden logo light">
+        <img class="logo logo-dark" src="/wordmark-white.PNG" alt="Love Ridden logo dark">
         <p class="site-tagline">seeking the truth in artistic creation</p>
     </section>
 
-    <!-- Scroll‑reveal cards -->
     <div class="scroll-content">
         <div class="cards-grid">
             <div class="card">
@@ -267,19 +218,15 @@
                 <a href="#" class="card-link">sit down →</a>
             </div>
         </div>
-
-        <div class="footer-note">
-            ✦  site by Gabriel Hoffman  ✦
-        </div>
+        <div class="footer-note">✦  site by Gabriel Hoffman  ✦</div>
     </div>
 
     <script>
         (function() {
-            // Theme toggle logic (preserved)
+            // Theme toggle (same as before)
             const toggleBtn = document.getElementById('theme-toggle');
             const themeIcon = document.getElementById('theme-icon');
             const themeText = document.getElementById('theme-text');
-
             function setTheme(theme) {
                 if (theme === 'dark') {
                     document.body.classList.add('dark');
@@ -293,45 +240,46 @@
                     themeText.textContent = 'Light';
                 }
             }
-
             function getSystemPreference() {
                 return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
             }
-
             function initTheme() {
-                const savedTheme = localStorage.getItem('theme');
-                if (savedTheme === 'dark' || savedTheme === 'light') {
-                    setTheme(savedTheme);
-                } else {
-                    setTheme(getSystemPreference());
-                }
+                const saved = localStorage.getItem('theme');
+                if (saved === 'dark' || saved === 'light') setTheme(saved);
+                else setTheme(getSystemPreference());
             }
-
-            function toggleTheme() {
+            toggleBtn.addEventListener('click', () => {
                 const isDark = document.body.classList.contains('dark');
                 setTheme(isDark ? 'light' : 'dark');
-            }
-
-            toggleBtn.addEventListener('click', toggleTheme);
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                if (!localStorage.getItem('theme')) {
-                    setTheme(e.matches ? 'dark' : 'light');
-                }
             });
-
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                if (!localStorage.getItem('theme')) setTheme(e.matches ? 'dark' : 'light');
+            });
             initTheme();
 
-            // Intersection Observer for scroll‑reveal cards
+            // Collapse hero on scroll
+            const hero = document.getElementById('hero');
+            const collapsePoint = 80; // pixels scrolled before shrinking
+            function handleScroll() {
+                if (window.scrollY > collapsePoint) {
+                    hero.classList.add('scrolled');
+                } else {
+                    hero.classList.remove('scrolled');
+                }
+            }
+            window.addEventListener('scroll', handleScroll);
+            handleScroll(); // initial check
+
+            // Reveal cards on scroll
             const cards = document.querySelectorAll('.card');
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('revealed');
-                        observer.unobserve(entry.target); // only trigger once
+                        observer.unobserve(entry.target);
                     }
                 });
             }, { threshold: 0.2, rootMargin: "0px 0px -30px 0px" });
-
             cards.forEach(card => observer.observe(card));
         })();
     </script>
