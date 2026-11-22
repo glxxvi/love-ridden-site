@@ -1,0 +1,8 @@
+/tools/football/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+/tools/football/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/tools/football/manifest.webmanifest
+  Cache-Control: no-cache

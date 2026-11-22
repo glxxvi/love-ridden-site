@@ -1,4 +1,4 @@
-// sw.js — stale-while-revalidate, redirect-safe.
+// sw.js — stale-while-revalidate, HTTP-cache-safe. v15.
 const VERSION = 'v15';
 const CACHE = `safb-${VERSION}`;
 const SHELL = [
@@ -10,10 +10,21 @@ const SHELL = [
   './icons/icon-192.png', './icons/icon-512.png',
 ];
 
+// Precache with no-store so we don't inherit stale browser HTTP cache entries.
+async function precache(url) {
+  try {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (res.ok) {
+      const cache = await caches.open(CACHE);
+      await cache.put(url, res);
+    }
+  } catch {}
+}
+
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE)
-      .then(c => Promise.allSettled(SHELL.map(url => c.add(url))))
+      .then(() => Promise.allSettled(SHELL.map(precache)))
       .then(() => self.skipWaiting())
   );
 });
@@ -26,7 +37,6 @@ self.addEventListener('activate', e => {
   );
 });
 
-// Strip the redirect flag from a response so it can be served from cache later.
 async function cleanResponse(res) {
   if (!res.redirected) return res;
   const body = await res.clone().blob();
@@ -42,8 +52,8 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (url.origin !== location.origin) return;
 
-  // Background revalidation — fetch fresh, clean redirect, cache only good 200s.
-  const networkPromise = fetch(e.request)
+  // cache: 'no-store' forces a real network request, bypassing HTTP cache.
+  const networkPromise = fetch(e.request, { cache: 'no-store' })
     .then(async res => {
       if (res && res.status === 200) {
         try {
@@ -60,11 +70,9 @@ self.addEventListener('fetch', e => {
 
   e.respondWith(
     caches.match(e.request).then(async cached => {
-      // Only serve cache if it's a clean (non-redirected) 200. Otherwise go network.
       if (cached && cached.status === 200 && !cached.redirected) return cached;
       const res = await networkPromise;
       if (res) return res;
-      // Last resort: cached shell, or nothing.
       const shell = await caches.match('./index.html');
       return shell || new Response('', { status: 503 });
     })
