@@ -233,6 +233,30 @@
     box-shadow: 0 0 0 1px rgba(var(--team-primary-rgb), 0.06);
   }
 
+  .file-drop {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem 1rem;
+    text-align: center;
+    color: var(--fg-muted);
+    transition: border-color 0.15s, background-color 0.15s;
+    cursor: pointer;
+    font-size: 0.9375rem;
+  }
+  .file-drop:hover { border-color: var(--border-soft); }
+  .file-drop.dragover {
+    border-color: var(--team-primary);
+    background: rgba(var(--team-primary-rgb), 0.05);
+    color: var(--fg);
+  }
+  .file-drop.has-file { border-style: solid; border-color: var(--team-primary); }
+  .file-drop p { margin: 0; }
+  .file-label {
+    color: var(--team-primary);
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
   .file-input { font-size: 0.9375rem; color: var(--fg-muted); }
   .row-buttons { display: flex; gap: 0.5rem; }
   .row-buttons > button { flex: 1; }

@@ -58,17 +58,25 @@ function assertSpot(p, label = 'spot') {
 
 // ---------- state ----------
 function newState(setup) {
+  const offense = setup.initialPossession || null;
+  const pos = setup.initialSpot ?? 50;
+  const down = setup.initialDown ?? 1;
+  const dist = setup.initialDistance ?? 10;
+  let ltg = pos + 10;
+  if (offense) {
+    ltg = F.lineToGain(offense, pos, down === 1 ? RULES.firstDownYards : dist);
+  }
   return {
-    offense: null,
-    pos: 50,
-    down: 1,
-    ltg: 40,
-    score: { US: 0, OPP: 0 },
+    offense,
+    pos,
+    down,
+    ltg,
+    score: setup.initialScore || { US: 0, OPP: 0 },
     quarter: setup.startQuarter || 1,
-    clock: null,
+    clock: setup.initialClock || null,
     awaitingPossession: null,
     awaitingTry: null,
-    lastSpot: 50,
+    lastSpot: pos,
   };
 }
 

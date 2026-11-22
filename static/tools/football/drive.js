@@ -44,13 +44,18 @@ const game = stored || (() => {
 // Tab title reflects the actual teams loaded.
 document.title = `${game.teams.US.short || game.teams.US.name} vs ${game.teams.OPP.short || game.teams.OPP.name} — Scorer`;
 
-// Setup object the engine consumes — colors/abbr/logo are ignored by replay().
 const setup = {
   teams: game.teams,
   roster: game.roster,
   oppRoster: game.oppRoster,
   openingKick: game.openingKick,
   startQuarter: game.startQuarter,
+  initialPossession: game.initialPossession,
+  initialSpot: game.initialSpot,
+  initialDown: game.initialDown,
+  initialDistance: game.initialDistance,
+  initialScore: game.initialScore,
+  initialClock: game.initialClock,
 };
 
 // Apply team colors as CSS variables so the whole page re-themes to the school.
@@ -91,16 +96,21 @@ if (devMode && devBadge) devBadge.hidden = false;
 const receivingTeam = game.openingKick === 'US' ? 'OPP' : 'US';
 const kickingTeam = receivingTeam === 'US' ? 'OPP' : 'US';
 
-const events = [{
-  id: 'ev0',
-  type: 'possession',
-  reason: 'kickoff',
-  offense: receivingTeam,
-  kickingTeam,
-  kicker: kickingTeam === 'OPP' ? opp(3) : us(3),
-  returner: receivingTeam === 'US' ? us(1) : opp(1),
-  spot: F.pos(receivingTeam, 25),
-}];
+const events = [];
+if (!game.initialPossession) {
+  const receivingTeam = game.openingKick === 'US' ? 'OPP' : 'US';
+  const kickingTeam = receivingTeam === 'US' ? 'OPP' : 'US';
+  events.push({
+    id: 'ev0',
+    type: 'possession',
+    reason: 'kickoff',
+    offense: receivingTeam,
+    kickingTeam,
+    kicker: kickingTeam === 'OPP' ? opp(3) : us(3),
+    returner: receivingTeam === 'US' ? us(1) : opp(1),
+    spot: F.pos(receivingTeam, 25),
+  });
+}
 
 // --- DOM ---
 const $ = id => document.getElementById(id);

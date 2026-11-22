@@ -1,5 +1,5 @@
 // sw.js — stale-while-revalidate, HTTP-cache-safe. v15.
-const VERSION = 'v17';
+const VERSION = 'v18';
 const CACHE = `safb-${VERSION}`;
 const SHELL = [
   './', './index.html', './app.js', './storage.js', './roster.js',

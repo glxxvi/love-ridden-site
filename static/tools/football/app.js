@@ -79,6 +79,7 @@ const state = {
   lineupDraft: null,
   starters: { qb: null, k: null },
   kicking: null,
+  gameEntry: null,
 };
 
 function esc(s) {
@@ -295,6 +296,7 @@ function handleHomeInput(e) {
   if (newTheme.id !== state.teamTheme.id) {
     state.teamTheme = newTheme;
     applyThemeVars(newTheme, state.themeMode);
+    updateFavicon(newTheme);
     updateHeaderInPlace(newTheme);
   }
   updateFaceoff();
@@ -336,6 +338,7 @@ async function loadSetup() {
   state.themeMode = savedTheme === 'light' ? 'light' : 'dark';
   document.documentElement.dataset.theme = state.themeMode;
   applyThemeVars(state.teamTheme, state.themeMode);
+  updateFavicon(state.teamTheme);
   await refreshRoster();
 }
 
@@ -579,11 +582,40 @@ function buildGroupedPlayerOptions(players, tiers, selectedId) {
 function renderStarters() {
   const active = state.roster.filter(p => p.active !== false);
 
-  const qbTiers = [
-    { label: 'Quarterbacks', match: /^(QB|ATH)$/i },
+  const isQB = p => p.positions.some(pos => /^QB$/i.test(String(pos).trim()));
+  const isATH = p => p.positions.some(pos => /^ATH$/i.test(String(pos).trim()));
+
+  const classRank = { Senior: 1, Junior: 2, Sophomore: 3, Freshman: 4 };
+  const bySeniorityThenNumber = (a, b) => {
+    const ca = classRank[(a.class || '').trim()] || 99;
+    const cb = classRank[(b.class || '').trim()] || 99;
+    if (ca !== cb) return ca - cb;
+    return (a.wornNumber ?? a.numbers[0]) - (b.wornNumber ?? b.numbers[0]);
+  };
+
+  const qbs = active.filter(isQB).sort(bySeniorityThenNumber);
+  const aths = active.filter(p => !isQB(p) && isATH(p)).sort(bySeniorityThenNumber);
+  const claimed = new Set([...qbs, ...aths].map(p => p.id));
+  const remaining = active.filter(p => !claimed.has(p.id));
+
+  const qbOptions =
+    qbs.map(p => {
+      const worn = p.wornNumber ?? p.numbers[0];
+      const sel = p.id === state.starters.qb ? ' selected' : '';
+      return `<option value="${p.id}"${sel}>#${worn} ${esc(p.displayName)}</option>`;
+    }).join('') +
+    aths.map(p => {
+      const worn = p.wornNumber ?? p.numbers[0];
+      const sel = p.id === state.starters.qb ? ' selected' : '';
+      return `<option value="${p.id}"${sel}>#${worn} ${esc(p.displayName)} (ATH)</option>`;
+    }).join('');
+
+  const restTiers = [
     { label: 'Skill Positions', match: /^(RB|HB|FB|WR|TE)$/i },
     { label: 'Everyone Else', match: null },
   ];
+  const restOptions = buildGroupedPlayerOptions(remaining, restTiers, state.starters.qb);
+
   const kTiers = [
     { label: 'Kickers', match: /^(K|PK)$/i },
     { label: 'Punters', match: /^P$/i },
@@ -603,7 +635,8 @@ function renderStarters() {
           <span>Starting QB</span>
           <select id="qbSelect">
             <option value="">— Select —</option>
-            ${buildGroupedPlayerOptions(active, qbTiers, state.starters.qb)}
+            ${qbOptions ? `<optgroup label="Quarterbacks">${qbOptions}</optgroup>` : ''}
+            ${restOptions}
           </select>
         </label>
 
@@ -671,10 +704,11 @@ function renderKicking() {
           <button id="kickSA" class="btn-secondary ${k.kickingTeam === 'SA' ? 'selected' : ''}">${esc(home)}</button>
           <button id="kickOPP" class="btn-secondary ${k.kickingTeam === 'OPP' ? 'selected' : ''}">${esc(opp)}</button>
         </div>
-        <div class="row-buttons">
+                <div class="row-buttons">
           <button id="backBtn" class="btn-secondary">Back</button>
-          <button id="startBtn" class="btn-primary" ${k.kickingTeam ? '' : 'disabled'}>Start Game</button>
+          <button id="startBtn" class="btn-primary" ${k.kickingTeam ? '' : 'disabled'}>Start from Kickoff</button>
         </div>
+        <button id="inProgressBtn" class="btn-link" style="align-self:center">Enter game in progress →</button>
       </div>
     </main>
   `;
@@ -697,7 +731,7 @@ function renderKicking() {
     render();
   });
 
-    document.getElementById('startBtn').addEventListener('click', () => {
+      document.getElementById('startBtn').addEventListener('click', () => {
     if (!k.kickingTeam) return;
 
     const usTheme = state.teamTheme;
@@ -705,8 +739,6 @@ function renderKicking() {
     const usName = state.setup.home || 'Home';
     const oppName = state.setup.opponent || 'Opponent';
 
-    // Snapshot the active roster with current worn numbers.
-    // Filters out anyone not dressed; keeps the schema the engine expects.
     const roster = state.roster
       .filter(p => p.active !== false)
       .map(p => ({
@@ -739,14 +771,214 @@ function renderKicking() {
         },
       },
       roster,
-      oppRoster: null,                                  // number-only until an opponent roster is imported
-      openingKick: k.kickingTeam === 'SA' ? 'US' : 'OPP', // who is kicking off
+      oppRoster: null,
+      openingKick: k.kickingTeam === 'SA' ? 'US' : 'OPP',
       startQuarter: k.quarter,
-      starters: state.starters,                          // { qb, k } — engine doesn't need them, UI might
+      starters: state.starters,
       themeMode: state.themeMode,
     };
 
-        saveGame(game);
+    saveGame(game);
+    window.location.href = './drive.html';
+  });
+
+  document.getElementById('inProgressBtn').addEventListener('click', () => {
+    state.gameEntry = {
+      quarter: k.quarter,
+      scores: { 1: { us: 0, opp: 0 }, 2: { us: 0, opp: 0 }, 3: { us: 0, opp: 0 }, 4: { us: 0, opp: 0 } },
+      possession: 'US',
+      spotSide: 'US',
+      spotYard: 35,
+      down: 1,
+      distance: 10,
+    };
+    state.screen = 'gameEntry';
+    render();
+  });
+}
+
+function renderGameEntry() {
+  const e = state.gameEntry;
+  if (!e) {
+    state.screen = 'kicking';
+    render();
+    return;
+  }
+  const home = state.setup.home || 'Home';
+  const opp = state.setup.opponent || 'Opponent';
+
+  const scoreRows = [1, 2, 3, 4].map(q => {
+    const enabled = q <= e.quarter;
+    const us = e.scores[q]?.us ?? 0;
+    const op = e.scores[q]?.opp ?? 0;
+    return `
+      <tr>
+        <td style="padding:0.5rem;color:var(--fg-muted);font-size:0.875rem">${qLabel(q)}</td>
+        <td style="padding:0.25rem">
+          <input class="score-input" type="number" min="0" max="99" step="1" data-q="${q}" data-team="us" value="${us}" ${enabled ? '' : 'disabled'} style="width:100%;padding:0.5rem;text-align:center">
+        </td>
+        <td style="padding:0.25rem">
+          <input class="score-input" type="number" min="0" max="99" step="1" data-q="${q}" data-team="opp" value="${op}" ${enabled ? '' : 'disabled'} style="width:100%;padding:0.5rem;text-align:center">
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  app.innerHTML = `
+    ${renderHeader()}
+    <main class="app-main">
+      <div class="screen">
+        <h1>Game in Progress</h1>
+        <p class="muted small" style="text-align:center">Enter the state when you started scoring.</p>
+
+        <label class="field">
+          <span>Current Quarter</span>
+          <select id="geQuarter">
+            ${[1,2,3,4,5].map(q =>
+              `<option value="${q}" ${e.quarter === q ? 'selected' : ''}>${qLabel(q)}</option>`
+            ).join('')}
+          </select>
+        </label>
+
+        <div class="field">
+          <span>Box Score</span>
+          <table style="width:100%;border-collapse:collapse;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+            <thead>
+              <tr style="background:var(--bg-3)">
+                <th style="padding:0.5rem;text-align:left;font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.05em">Q</th>
+                <th style="padding:0.5rem;text-align:center;font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.05em">${esc(home.split(' ')[0])}</th>
+                <th style="padding:0.5rem;text-align:center;font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.05em">${esc(opp.split(' ')[0])}</th>
+              </tr>
+            </thead>
+            <tbody>${scoreRows}</tbody>
+          </table>
+        </div>
+
+        <div class="field">
+          <span>Possession</span>
+          <div class="kickoff-buttons">
+            <button id="gePossUS" class="btn-secondary ${e.possession === 'US' ? 'selected' : ''}">${esc(home)}</button>
+            <button id="gePossOPP" class="btn-secondary ${e.possession === 'OPP' ? 'selected' : ''}">${esc(opp)}</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <span>Ball spot</span>
+          <div class="kickoff-buttons" style="margin-bottom:0.5rem">
+            <button id="geSideUS" class="btn-secondary ${e.spotSide === 'US' ? 'selected' : ''}">Own</button>
+            <button id="geSideOPP" class="btn-secondary ${e.spotSide === 'OPP' ? 'selected' : ''}">Opponent's</button>
+          </div>
+          <input id="geYard" type="number" min="0" max="50" step="1" value="${e.spotYard}" placeholder="0–50 (50 = midfield)">
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+          <label class="field">
+            <span>Down</span>
+            <select id="geDown">
+              ${[1,2,3,4].map(d => `<option value="${d}" ${e.down === d ? 'selected' : ''}>${qLabel(d).replace('th','')}${['1st','2nd','3rd','4th'][d-1] ? '' : ''}</option>`).join('')}
+            </select>
+          </label>
+          <label class="field">
+            <span>Distance</span>
+            <input id="geDist" type="number" min="1" max="99" step="1" value="${e.distance}">
+          </label>
+        </div>
+
+        <div class="row-buttons">
+          <button id="geBack" class="btn-secondary">Back</button>
+          <button id="geStart" class="btn-primary">Start Game</button>
+        </div>
+      </div>
+    </main>
+  `;
+
+  const $ = id => document.getElementById(id);
+  const rerender = () => render();
+
+  $('geQuarter').addEventListener('change', ev => {
+    e.quarter = parseInt(ev.target.value, 10);
+    rerender();
+  });
+  document.querySelectorAll('.score-input').forEach(inp => {
+    inp.addEventListener('input', ev => {
+      const q = parseInt(ev.target.dataset.q, 10);
+      const team = ev.target.dataset.team;
+      e.scores[q] = e.scores[q] || { us: 0, opp: 0 };
+      e.scores[q][team] = Math.max(0, parseInt(ev.target.value, 10) || 0);
+    });
+  });
+  $('gePossUS').addEventListener('click', () => { e.possession = 'US'; rerender(); });
+  $('gePossOPP').addEventListener('click', () => { e.possession = 'OPP'; rerender(); });
+  $('geSideUS').addEventListener('click', () => { e.spotSide = 'US'; rerender(); });
+  $('geSideOPP').addEventListener('click', () => { e.spotSide = 'OPP'; rerender(); });
+  $('geYard').addEventListener('input', ev => { e.spotYard = Math.min(50, Math.max(0, parseInt(ev.target.value, 10) || 0)); });
+  $('geDown').addEventListener('change', ev => { e.down = parseInt(ev.target.value, 10); });
+  $('geDist').addEventListener('input', ev => { e.distance = Math.max(1, parseInt(ev.target.value, 10) || 10); });
+
+  $('geBack').addEventListener('click', () => {
+    state.screen = 'kicking';
+    render();
+  });
+
+  $('geStart').addEventListener('click', () => {
+    let totalUS = 0, totalOPP = 0;
+    for (let q = 1; q <= e.quarter; q++) {
+      totalUS += e.scores[q]?.us || 0;
+      totalOPP += e.scores[q]?.opp || 0;
+    }
+
+    const spotPos = e.spotSide === 'US' ? e.spotYard : 100 - e.spotYard;
+
+    const usTheme = state.teamTheme;
+    const oppTheme = state.opponentTheme;
+    const usName = state.setup.home || 'Home';
+    const oppName = state.setup.opponent || 'Opponent';
+
+    const roster = state.roster
+      .filter(p => p.active !== false)
+      .map(p => ({
+        id: p.id,
+        displayName: p.displayName,
+        numbers: p.numbers,
+        wornNumber: Number(p.wornNumber ?? p.numbers[0]),
+        active: true,
+      }));
+
+    const game = {
+      gameId: newGameId(),
+      startedAt: new Date().toISOString(),
+      teams: {
+        US: {
+          name: usName,
+          short: usTheme.city || usName,
+          abbr: usTheme.shortName || initialsFor(usName),
+          primary: usTheme.primary,
+          secondary: usTheme.primaryFg,
+          logo: usTheme.logo || null,
+        },
+        OPP: {
+          name: oppName,
+          short: oppTheme.city || oppName,
+          abbr: oppTheme.shortName || initialsFor(oppName),
+          primary: oppTheme.primary,
+          secondary: oppTheme.primaryFg,
+          logo: oppTheme.logo || null,
+        },
+      },
+      roster,
+      oppRoster: null,
+      openingKick: state.kicking.kickingTeam === 'SA' ? 'US' : 'OPP',
+      startQuarter: e.quarter,
+      starters: state.starters,
+      themeMode: state.themeMode,
+      initialPossession: e.possession,
+      initialSpot: spotPos,
+      initialDown: e.down,
+      initialDistance: e.distance,
+      initialScore: { US: totalUS, OPP: totalOPP },
+    };
+
+    saveGame(game);
     window.location.href = './drive.html';
   });
 }
@@ -830,11 +1062,13 @@ function renderRosterImport() {
         <button id="confirmBtn" class="btn-primary">Confirm Import</button>
       </div>
     `;
-  } else {
+    } else {
     body = `
-      <p class="muted" style="text-align:center">Paste the roster CSV below, or choose a file.</p>
+      <p class="muted" style="text-align:center">Paste the roster CSV below, or drop a file.</p>
       ${err ? `<p class="bad" style="text-align:center">${esc(err)}</p>` : ''}
-      <input id="fileInput" type="file" accept=".csv,text/csv" class="file-input">
+      <div id="fileDrop" class="file-drop">
+        <p>Drop a CSV here, or <label class="file-label">browse<input id="fileInput" type="file" accept=".csv,text/csv" hidden></label></p>
+      </div>
       <textarea id="pasteArea" class="textarea" placeholder="Number,Player,Position,Class,Height,Weight,Notes&#10;#1,Player Name,QB,Senior,6'0,180,"></textarea>
       <div class="row-buttons">
         <button id="backBtn" class="btn-secondary">Cancel</button>
@@ -874,19 +1108,46 @@ function renderRosterImport() {
     return;
   }
 
-  document.getElementById('backBtn').addEventListener('click', () => {
+    document.getElementById('backBtn').addEventListener('click', () => {
     state.importError = null;
     state.screen = 'setup';
     render();
   });
+
   const fileInput = document.getElementById('fileInput');
   const pasteArea = document.getElementById('pasteArea');
-  fileInput.addEventListener('change', async e => {
-    const file = e.target.files?.[0];
+  const drop = document.getElementById('fileDrop');
+
+  const loadFile = async (file) => {
     if (!file) return;
     pasteArea.value = await file.text();
-    e.target.value = '';
+    drop.classList.add('has-file');
+    drop.querySelector('p').innerHTML = `Loaded <strong>${esc(file.name)}</strong> — <label class="file-label">change<input id="fileInput" type="file" accept=".csv,text/csv" hidden></label>`;
+    document.getElementById('fileInput').addEventListener('change', e => loadFile(e.target.files?.[0]));
+  };
+
+  fileInput.addEventListener('change', e => loadFile(e.target.files?.[0]));
+
+  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => {
+    e.preventDefault();
+    e.stopPropagation();
+    drop.classList.add('dragover');
+  }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (ev === 'dragleave' && drop.contains(e.relatedTarget)) return;
+    drop.classList.remove('dragover');
+  }));
+  drop.addEventListener('drop', e => {
+    const file = e.dataTransfer?.files?.[0];
+    if (file) loadFile(file);
   });
+  drop.addEventListener('click', e => {
+    if (e.target.closest('label')) return;
+    document.getElementById('fileInput').click();
+  });
+
   document.getElementById('previewBtn').addEventListener('click', () => {
     const text = pasteArea.value.trim();
     if (!text) { state.importError = 'Nothing to import.'; render(); return; }
@@ -899,7 +1160,6 @@ function renderRosterImport() {
       render();
     }
   });
-}
 
 function render() {
   switch (state.screen) {
@@ -909,6 +1169,7 @@ function render() {
     case 'lineup': renderLineup(); break;
     case 'starters': renderStarters(); break;
     case 'kicking': renderKicking(); break;
+	case 'gameEntry': renderGameEntry(); break;
     case 'drive': renderDriveStub(); break;
   }
 }
