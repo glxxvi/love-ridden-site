@@ -1,6 +1,6 @@
 const DB_NAME = 'safb';
-const DB_VERSION = 1;
-const SCHEMA_VERSION = 1;
+const DB_VERSION = 2;
+const SCHEMA_VERSION = 2;
 
 let dbp = null;
 
@@ -8,12 +8,18 @@ function open() {
   if (dbp) return dbp;
   dbp = new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, DB_VERSION);
-    req.onupgradeneeded = () => {
+    req.onupgradeneeded = (event) => {
       const db = req.result;
+      const oldVersion = event.oldVersion;
       if (!db.objectStoreNames.contains('meta')) db.createObjectStore('meta');
       if (!db.objectStoreNames.contains('events')) db.createObjectStore('events', { keyPath: 'entry_num' });
-      if (!db.objectStoreNames.contains('roster')) db.createObjectStore('roster', { keyPath: 'number' });
       if (!db.objectStoreNames.contains('overrides')) db.createObjectStore('overrides', { keyPath: 'key' });
+      if (oldVersion < 2 && db.objectStoreNames.contains('roster')) {
+        db.deleteObjectStore('roster');
+      }
+      if (!db.objectStoreNames.contains('roster')) {
+        db.createObjectStore('roster', { keyPath: 'id' });
+      }
     };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
@@ -39,12 +45,22 @@ export const store = {
   async del(s, k) { return tx(s, 'readwrite', st => st.delete(k)); },
   async all(s) { return tx(s, 'readonly', st => st.getAll()); },
   async clear(s) { return tx(s, 'readwrite', st => st.clear()); },
+  async putMany(s, items) {
+    const db = await open();
+    return new Promise((resolve, reject) => {
+      const t = db.transaction(s, 'readwrite');
+      const st = t.objectStore(s);
+      for (const item of items) st.put(item);
+      t.oncomplete = () => resolve(items.length);
+      t.onerror = () => reject(t.error);
+    });
+  },
   async meta(k, v) { return v === undefined ? this.get('meta', k) : this.put('meta', v, k); },
   async init() {
     await open();
     const existing = await this.meta('schema_version');
-    if (existing === undefined) await this.meta('schema_version', SCHEMA_VERSION);
-    return { db: DB_NAME, schema: existing ?? SCHEMA_VERSION };
+    if (existing !== SCHEMA_VERSION) await this.meta('schema_version', SCHEMA_VERSION);
+    return { db: DB_NAME, schema: SCHEMA_VERSION };
   },
 };
 

@@ -1,7 +1,7 @@
-const VERSION = 'v2';
+const VERSION = 'v3';
 const CACHE = `safb-${VERSION}`;
 const SHELL = [
-  './', './index.html', './app.js', './storage.js',
+  './', './index.html', './app.js', './storage.js', './roster.js',
   './manifest.webmanifest', './vendor/fflate.min.js',
   './icons/icon-192.png', './icons/icon-512.png',
 ];
