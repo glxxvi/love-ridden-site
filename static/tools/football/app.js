@@ -1,5 +1,6 @@
 import { store, selfTest, requestPersistence } from './storage.js';
 import { parseRoster, previewLines } from './roster.js';
+import { saveGame, newGameId } from './game-state.js';
 
 const app = document.getElementById('app');
 
@@ -687,10 +688,57 @@ function renderKicking() {
     render();
   });
 
-  document.getElementById('startBtn').addEventListener('click', () => {
+    document.getElementById('startBtn').addEventListener('click', () => {
     if (!k.kickingTeam) return;
-    state.screen = 'drive';
-    render();
+
+    const usTheme = state.teamTheme;
+    const oppTheme = state.opponentTheme;
+    const usName = state.setup.home || 'Home';
+    const oppName = state.setup.opponent || 'Opponent';
+
+    // Snapshot the active roster with current worn numbers.
+    // Filters out anyone not dressed; keeps the schema the engine expects.
+    const roster = state.roster
+      .filter(p => p.active !== false)
+      .map(p => ({
+        id: p.id,
+        displayName: p.displayName,
+        numbers: p.numbers,
+        wornNumber: Number(p.wornNumber ?? p.numbers[0]),
+        active: true,
+      }));
+
+    const game = {
+      gameId: newGameId(),
+      startedAt: new Date().toISOString(),
+      teams: {
+        US: {
+          name: usName,
+          short: usTheme.city || usName,
+          abbr: usTheme.shortName || initialsFor(usName),
+          primary: usTheme.primary,
+          secondary: usTheme.primaryFg,
+          logo: usTheme.logo || null,
+        },
+        OPP: {
+          name: oppName,
+          short: oppTheme.city || oppName,
+          abbr: oppTheme.shortName || initialsFor(oppName),
+          primary: oppTheme.primary,
+          secondary: oppTheme.primaryFg,
+          logo: oppTheme.logo || null,
+        },
+      },
+      roster,
+      oppRoster: null,                                  // number-only until an opponent roster is imported
+      openingKick: k.kickingTeam === 'SA' ? 'US' : 'OPP', // who is kicking off
+      startQuarter: k.quarter,
+      starters: state.starters,                          // { qb, k } — engine doesn't need them, UI might
+      themeMode: state.themeMode,
+    };
+
+        saveGame(game);
+    window.location.href = './drive.html';
   });
 }
 

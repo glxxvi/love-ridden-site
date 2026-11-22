@@ -3,123 +3,578 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Game Scorer — Drive</title>
+<meta name="theme-color" content="#0a0a0b">
+<title>Love Ridden Angels — Scorer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0a0a0b;
-    --bg-2: #151516;
-    --bg-3: #1f1f21;
+    --bg-2: #141416;
+    --bg-3: #1c1c1f;
     --border: #2a2a2d;
-    --border-soft: rgba(255,255,255,0.09);
-    --team-primary: #3ddc97;
-    --team-primary-fg: #052418;
+    --team-primary: #3ddc97;      /* overwritten at boot from the handoff */
+    --team-primary-fg: #052418;   /* overwritten at boot from the handoff */
+    --ball: #ffcc33;
     --text: #e8e8ea;
-    --text-dim: #8a8a8e;
-    --radius: 10px;
-    --radius-sm: 6px;
-    --radius-lg: 14px;
+    --text-dim: #7e7e83;
+    --danger: #ff6b6b;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --us-logo: #e6c66a;           /* overwritten at boot from the handoff */
+    --opp-logo: #4a9dd4;          /* overwritten at boot from the handoff */
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .dev-badge {
+    position: fixed; top: 8px; right: 8px;
+    background: #ff6b6b; color: white;
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    padding: 3px 6px; border-radius: 4px; z-index: 50;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; }
   body {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
+    display: flex;
+    flex-direction: column;
     background: var(--bg);
     color: var(--text);
     font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 15px;
     -webkit-font-smoothing: antialiased;
-    overscroll-behavior: contain;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    overscroll-behavior: none;
+    user-select: none;
   }
 
-  #header {
-    padding: 12px 16px;
-    background: var(--bg-2);
-    border-bottom: 1px solid var(--border);
+  /* ---------- SCOREBOARD ---------- */
+  .scoreboard {
     display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 8px 20px 0;
+    gap: 12px;
+  }
+  .team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 4px;
   }
-  .teams { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-dim); letter-spacing: 0.5px; text-transform: uppercase; }
-  .scores { display: flex; justify-content: center; align-items: baseline; gap: 12px; font-size: 32px; font-weight: 600; }
-  .scores .dash { color: var(--text-dim); font-size: 20px; }
-  .meta { display: flex; justify-content: center; gap: 16px; font-size: 12px; color: var(--text-dim); }
-  .situation { text-align: center; font-size: 16px; font-weight: 500; color: var(--team-primary); padding-top: 4px; }
-  .spot { text-align: center; font-size: 12px; color: var(--text-dim); }
+  .team.opp { justify-self: end; }
+  .team.us { justify-self: start; }
+    .logo {
+    width: 48px; height: 48px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; letter-spacing: 0;
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 1.5px var(--border);
+    text-transform: uppercase;
+  }
+  .team.us .logo { background: var(--us-logo); color: #1a1207; }
+  .team.opp .logo { background: var(--opp-logo); color: #071a2a; }
+  .possession-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border);
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+  .possession-dot.active {
+    background: var(--ball);
+    box-shadow: 0 0 8px var(--ball);
+  }
+  .center-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 130px;
+  }
+  .scores {
+    display: flex; align-items: baseline; gap: 8px;
+    font-size: 34px; font-weight: 700; line-height: 1;
+    letter-spacing: -1px;
+  }
+  .scores .dash { color: var(--text-dim); font-size: 20px; font-weight: 400; }
+  .meta {
+    font-size: 11px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase;
+  }
 
-  #log { overflow-y: auto; padding: 12px 16px 24px; display: flex; flex-direction: column; gap: 8px; }
-  .entry { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; }
-  .entry-title { font-size: 11px; color: var(--team-primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-  .entry-text { font-size: 14px; line-height: 1.45; }
+  /* ---------- FIELD ---------- */
+  .field-wrap {
+    position: relative;
+    margin: 8px 0 4px;
+    padding: 0 4px;
+  }
+  .field-wrap svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
 
-  footer { padding: 12px 16px; background: var(--bg-2); border-top: 1px solid var(--border); display: flex; gap: 12px; }
-  footer button {
-    flex: 1; padding: 16px; font-size: 16px; font-weight: 500; font-family: inherit;
-    border-radius: var(--radius); border: 1px solid var(--border);
-    background: var(--bg-3); color: var(--text); cursor: pointer;
+  /* ---------- SITUATION ---------- */
+  .situation {
+    text-align: center;
+    font-size: 17px; font-weight: 600;
+    color: var(--team-primary);
+    padding: 2px 16px;
+    letter-spacing: 0.5px;
+  }
+  .last-play {
+    display: block;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-dim);
+    padding: 4px 16px 8px;
+    line-height: 1.4;
+    cursor: pointer;
+    background: none; border: none; font-family: inherit;
+    max-width: 100%; overflow: hidden;
+    white-space: nowrap; text-overflow: ellipsis;
+  }
+  .last-play:active { color: var(--text); }
+
+  /* ---------- PLAY TYPE ---------- */
+  .play-types {
+    display: flex;
+    gap: 6px;
+    padding: 8px 16px 4px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .chip {
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--bg-2);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip.active {
+    background: var(--team-primary);
+    color: var(--team-primary-fg);
+    border-color: var(--team-primary);
+  }
+  .chip:active:not(.active) { background: var(--bg-3); }
+
+  /* ---------- NUMBER PAD ---------- */
+  .pad-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px 12px;
+    gap: 10px;
+  }
+  .pad-header {
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .pad-display {
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--text);
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 2px;
+  }
+  .pad-display.empty { color: var(--text-dim); font-size: 24px; letter-spacing: 1px; }
+
+  .pad {
+    display: grid;
+    grid-template-columns: repeat(3, 72px);
+    gap: 8px;
+    justify-content: center;
+  }
+  .pad button {
+    height: 64px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 24px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.08s;
+  }
+  .pad button:active { background: var(--bg-3); }
+  .pad button.action {
+    background: var(--bg-3);
+    font-size: 18px;
+  }
+  .pad button.confirm {
+    background: var(--team-primary);
+    color: var(--team-primary-fg);
+    border-color: var(--team-primary);
+  }
+  .pad button.confirm:disabled {
+    background: var(--bg-3);
+    color: var(--text-dim);
+    border-color: var(--border);
+  }
+
+  /* ---------- SIDE TOGGLE ---------- */
+  .side-toggle {
+    display: inline-flex;
+    border-radius: 999px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin: 0;
+  }
+  .side-toggle button {
+    padding: 6px 14px;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .side-toggle button.active {
+    background: var(--team-primary);
+    color: var(--team-primary-fg);
+  }
+
+  /* ---------- YARD GRID ---------- */
+  .yard-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 56px);
+    gap: 6px;
+    justify-content: center;
+    max-width: 100%;
+    padding: 0 8px;
+  }
+  .yard-grid button {
+    height: 44px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.08s;
+  }
+  .yard-grid button:active { background: var(--bg-3); }
+  .yard-grid button.mid {
+    border-color: var(--team-primary);
+    color: var(--team-primary);
+  }
+
+  /* ---------- FABS ---------- */
+  .fab {
+    position: fixed;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg-3);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .fab:active { transform: scale(0.94); background: var(--border); }
+  .fab svg { width: 20px; height: 20px; }
+  .fab-left { left: 8px; }
+  .fab-right { right: 8px; }
+  .fab-1 { top: 46%; }
+  .fab-2 { top: calc(46% + 64px); }
+
+  /* ---------- BOTTOM ---------- */
+  .bottom-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 16px 12px;
+    gap: 12px;
+  }
+  .bottom-row button {
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
     transition: background 0.1s;
   }
-  footer button:active { background: var(--border); }
-  footer button:disabled { opacity: 0.4; cursor: not-allowed; }
-  #btn-rush { background: var(--team-primary); color: var(--team-primary-fg); border-color: var(--team-primary); }
-  #btn-rush:active { background: #35c284; }
+  .bottom-row button:active { background: var(--bg-3); }
+  .bottom-row button:disabled { opacity: 0.4; cursor: not-allowed; }
 
+  /* ---------- DIALOGS ---------- */
   dialog {
-    border: 1px solid var(--border); background: var(--bg-2); color: var(--text);
-    border-radius: var(--radius-lg); padding: 20px; width: min(92vw, 360px); font-family: inherit;
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    color: var(--text);
+    border-radius: var(--radius);
+    padding: 24px;
+    width: min(90vw, 340px);
+    font-family: inherit;
   }
-  dialog::backdrop { background: rgba(0,0,0,0.7); }
-  dialog h2 { font-size: 16px; margin-bottom: 16px; color: var(--team-primary); text-transform: uppercase; letter-spacing: 1px; }
-  dialog label { display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 12px; }
-  dialog input[type="text"] {
-    display: block; width: 100%; margin-top: 4px; padding: 12px; font-size: 20px; font-family: inherit;
-    background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  dialog::backdrop { background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); }
+  dialog h2 {
+    font-size: 14px;
+    color: var(--team-primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
   }
-  dialog input[type="text"]:focus { outline: none; border-color: var(--team-primary); }
-  fieldset { border: none; padding: 0; margin: 0 0 12px; }
-  fieldset legend { font-size: 12px; color: var(--text-dim); margin-bottom: 6px; }
-  fieldset .radios { display: flex; gap: 16px; margin-bottom: 8px; }
-  fieldset .radios label { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; color: var(--text); margin: 0; }
-  #rush-error { color: #ff7a7a; font-size: 12px; min-height: 16px; margin: 8px 0; }
+  dialog p { color: var(--text-dim); font-size: 13px; line-height: 1.6; margin-bottom: 20px; }
   dialog menu { display: flex; gap: 12px; padding: 0; margin: 0; list-style: none; }
   dialog menu button {
-    flex: 1; padding: 14px; font-size: 15px; font-family: inherit; border-radius: var(--radius);
-    border: 1px solid var(--border); background: var(--bg-3); color: var(--text); cursor: pointer;
+    flex: 1;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg-3);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
   }
-  dialog menu button[type="submit"] { background: var(--team-primary); color: var(--team-primary-fg); border-color: var(--team-primary); }
+
+  /* ---------- TOAST ---------- */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(72px + env(safe-area-inset-bottom));
+    transform: translateX(-50%) translateY(20px);
+    background: var(--bg-3);
+    color: var(--text);
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 100;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---------- LOG DIALOG ---------- */
+  #log-dialog { width: min(92vw, 440px); max-height: 70vh; overflow-y: auto; padding: 16px; }
+  .log-list { display: flex; flex-direction: column; gap: 8px; }
+  .log-entry {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+  }
+  .log-title {
+    font-size: 10px;
+    color: var(--team-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+  }
+  .log-text { font-size: 13px; line-height: 1.4; color: var(--text); }
 </style>
 </head>
-<body>
-  <header id="header"></header>
-  <main id="log"></main>
-  <footer>
-    <button id="btn-rush">Rush</button>
-    <button id="btn-undo" disabled>Undo</button>
-  </footer>
+<body style="visibility:hidden">
 
-  <dialog id="rush-dialog">
-    <form id="rush-form">
-      <h2>Rush</h2>
-      <label>Rusher #
-        <input id="rush-num" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" required>
-      </label>
-      <fieldset>
-        <legend>Ball ended on</legend>
-        <div class="radios">
-          <label><input type="radio" name="side" value="US" checked> Own</label>
-          <label><input type="radio" name="side" value="OPP"> Opponent's</label>
-        </div>
-        <input id="rush-yard" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="0–50 (50 = midfield)" required>
-      </fieldset>
-      <p id="rush-error" role="alert"></p>
-      <menu>
-        <button type="button" id="rush-cancel">Cancel</button>
-        <button type="submit">Confirm</button>
-      </menu>
-    </form>
+  <!-- Scoreboard -->
+  <header class="scoreboard">
+    <div class="team us">
+      <div class="logo">LR</div>
+      <div class="possession-dot" id="poss-us"></div>
+    </div>
+    <div class="center-score">
+      <div class="scores">
+        <span id="score-us">0</span>
+        <span class="dash">—</span>
+        <span id="score-opp">0</span>
+      </div>
+      <div class="meta" id="meta">Q1 · 12:00</div>
+    </div>
+    <div class="team opp">
+      <div class="logo">PFX</div>
+      <div class="possession-dot" id="poss-opp"></div>
+    </div>
+  </header>
+
+  <!-- Field -->
+  <div class="field-wrap">
+    <svg viewBox="0 0 1200 640" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="fade" cx="50%" cy="50%" r="62%">
+          <stop offset="30%" stop-color="white" stop-opacity="1"/>
+          <stop offset="75%" stop-color="white" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </radialGradient>
+        <mask id="fadeMask">
+          <rect width="1200" height="640" fill="url(#fade)"/>
+        </mask>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="7"/>
+        </filter>
+      </defs>
+
+      <g mask="url(#fadeMask)">
+        <!-- Field background -->
+        <rect width="1200" height="640" fill="#0d5a37"/>
+        <rect width="1200" height="640" fill="url(#fade)" opacity="0.15"/>
+        <!-- End zones -->
+        <rect x="0" y="0" width="100" height="640" fill="#0a3e26"/>
+        <rect x="1100" y="0" width="100" height="640" fill="#0a3e26"/>
+        <!-- Yard lines -->
+        <g stroke="white" stroke-width="1.5" opacity="0.55">
+          <line x1="100" y1="0" x2="100" y2="640"/>
+          <line x1="1100" y1="0" x2="1100" y2="640"/>
+          <line x1="200" y1="0" x2="200" y2="640"/>
+          <line x1="300" y1="0" x2="300" y2="640"/>
+          <line x1="400" y1="0" x2="400" y2="640"/>
+          <line x1="500" y1="0" x2="500" y2="640"/>
+          <line x1="600" y1="0" x2="600" y2="640" stroke-width="2.5" opacity="0.8"/>
+          <line x1="700" y1="0" x2="700" y2="640"/>
+          <line x1="800" y1="0" x2="800" y2="640"/>
+          <line x1="900" y1="0" x2="900" y2="640"/>
+          <line x1="1000" y1="0" x2="1000" y2="640"/>
+        </g>
+        <!-- Hash marks (short ticks) -->
+        <g stroke="white" stroke-width="1.5" opacity="0.35">
+          <line x1="150" y1="280" x2="150" y2="360"/>
+          <line x1="250" y1="280" x2="250" y2="360"/>
+          <line x1="350" y1="280" x2="350" y2="360"/>
+          <line x1="450" y1="280" x2="450" y2="360"/>
+          <line x1="550" y1="280" x2="550" y2="360"/>
+          <line x1="650" y1="280" x2="650" y2="360"/>
+          <line x1="750" y1="280" x2="750" y2="360"/>
+          <line x1="850" y1="280" x2="850" y2="360"/>
+          <line x1="950" y1="280" x2="950" y2="360"/>
+          <line x1="1050" y1="280" x2="1050" y2="360"/>
+        </g>
+      </g>
+
+      <!-- Ball dot (outside mask so it stays crisp) -->
+      <g id="ball-group" transform="translate(350, 320)">
+        <circle r="20" fill="#ffcc33" opacity="0.5" filter="url(#glow)"/>
+        <circle r="9" fill="#ffcc33" stroke="#0a0a0b" stroke-width="2.5"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Situation -->
+  <div class="situation" id="situation">1st &amp; 10</div>
+  <button class="last-play" id="last-play" type="button">—</button>
+
+  <!-- Play type -->
+  <div class="play-types" id="play-types">
+    <button class="chip" data-kind="run">Rush</button>
+    <button class="chip" data-kind="pass">Pass</button>
+    <button class="chip" data-kind="sack">Sack</button>
+    <button class="chip" data-kind="kneel">Kneel</button>
+    <button class="chip" data-kind="spike">Spike</button>
+  </div>
+
+  <!-- Input surface -->
+  <main class="pad-area" id="pad-area">
+    <div class="pad-header" id="pad-header">Select a play type</div>
+    <div class="pad-display empty" id="pad-display">—</div>
+
+    <!-- Number pad -->
+    <div class="pad" id="pad-number" style="display:none">
+      <button data-key="1">1</button>
+      <button data-key="2">2</button>
+      <button data-key="3">3</button>
+      <button data-key="4">4</button>
+      <button data-key="5">5</button>
+      <button data-key="6">6</button>
+      <button data-key="7">7</button>
+      <button data-key="8">8</button>
+      <button data-key="9">9</button>
+      <button data-key="back" class="action">←</button>
+      <button data-key="0">0</button>
+      <button data-key="ok" class="confirm">✓</button>
+    </div>
+
+    <!-- Yard grid -->
+    <div id="pad-yard" style="display:none;flex-direction:column;gap:10px;align-items:center">
+      <div class="side-toggle" id="side-toggle">
+        <button data-side="US">Own</button>
+        <button data-side="OPP">Opp</button>
+      </div>
+      <div class="yard-grid" id="yard-grid"></div>
+    </div>
+  </main>
+
+  <!-- Bottom row -->
+  <div class="bottom-row">
+    <button id="btn-undo" disabled>Undo</button>
+    <button id="btn-history">History</button>
+  </div>
+
+  <!-- FABs -->
+  <button class="fab fab-left fab-1" id="fab-penalty" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+    Flag
+  </button>
+  <button class="fab fab-left fab-2" id="fab-bigplay" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    Big
+  </button>
+  <button class="fab fab-right fab-1" id="fab-score" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>
+    Score
+  </button>
+  <button class="fab fab-right fab-2" id="fab-possession" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+    Ball
+  </button>
+
+  <!-- Log dialog -->
+  <dialog id="log-dialog">
+    <h2>Play-by-play</h2>
+    <div class="log-list" id="log-list"></div>
+    <menu style="margin-top:16px">
+      <button type="button" id="log-close">Close</button>
+    </menu>
   </dialog>
+
+  <!-- Placeholder dialog -->
+  <dialog id="placeholder-dialog">
+    <h2 id="placeholder-title">Coming soon</h2>
+    <p id="placeholder-body">This will be wired in the next increment.</p>
+    <menu>
+      <button type="button" id="placeholder-close">OK</button>
+    </menu>
+  </dialog>
+
+  <div class="dev-badge" id="dev-badge" hidden>DEV</div>
+
+  <div class="toast" id="toast"></div>
 
   <script type="module" src="drive.js"></script>
 </body>
