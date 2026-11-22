@@ -345,7 +345,6 @@ $('fab-possession').addEventListener('click', () => showPlaceholder('Possession 
 // --- Boot ---
 renderPad();
 render();
-boot();
 
 // When a new SW takes over, reload so the page uses the new code immediately.
 let refreshing = false;
