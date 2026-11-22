@@ -1076,6 +1076,7 @@ function renderRosterImport() {
       </div>
     `;
   }
+}
 
   app.innerHTML = `
     ${renderHeader()}
