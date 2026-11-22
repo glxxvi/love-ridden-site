@@ -1,5 +1,5 @@
 // sw.js — stale-while-revalidate, HTTP-cache-safe. v15.
-const VERSION = 'v15';
+const VERSION = 'v17';
 const CACHE = `safb-${VERSION}`;
 const SHELL = [
   './', './index.html', './app.js', './storage.js', './roster.js',
@@ -8,6 +8,9 @@ const SHELL = [
   './engine/stats.js', './engine/prose.js', './engine/test-teams.js',
   './manifest.webmanifest', './vendor/fflate.min.js',
   './icons/icon-192.png', './icons/icon-512.png',
+  './logos/San-Augustine.png', './logos/Joaquin.png',
+  './fonts/GeistMono-VariableFont_wght.ttf',
+  './fonts/GeistMono-Italic-VariableFont_wght.ttf',
 ];
 
 // Precache with no-store so we don't inherit stale browser HTTP cache entries.
