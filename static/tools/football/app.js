@@ -121,6 +121,15 @@ function faceoffAbbr(theme, name) {
   return initialsFor(name);
 }
 
+
+function updateFavicon(theme) {
+  if (!theme || !theme.logo) return;
+  document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach(link => {
+    link.href = theme.logo;
+    if (link.rel === 'icon') link.type = 'image/png';
+  });
+}
+
 function applyThemeVars(theme, mode) {
   const root = document.documentElement;
   const palette = mode === 'light' ? theme.light : theme.dark;

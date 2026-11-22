@@ -68,6 +68,15 @@ document.body.style.visibility = 'visible';
 document.querySelector('.team.us .logo').textContent = game.teams.US.abbr || initialsOf(game.teams.US.short);
 document.querySelector('.team.opp .logo').textContent = game.teams.OPP.abbr || initialsOf(game.teams.OPP.short);
 
+// Use the user team's logo as the favicon and apple-touch-icon.
+if (game.teams.US?.logo) {
+  const iconUrl = game.teams.US.logo;
+  document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach(link => {
+    link.href = iconUrl;
+    if (link.rel === 'icon') link.type = 'image/png';
+  });
+}
+
 function initialsOf(name) {
   if (!name) return '?';
   return name.split(/\s+/).map(w => w[0]).join('').slice(0, 3).toUpperCase();
