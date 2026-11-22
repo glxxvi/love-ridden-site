@@ -82,6 +82,7 @@ export function testSetup({ openingKick = 'OPP', startQuarter = 1 } = {}) {
       OPP: { name: PFENEX_FINANCIAL_GROUP.name,  short: PFENEX_FINANCIAL_GROUP.short },
     },
     roster: LOVE_RIDDEN_ANGELS.roster,
+    oppRoster: PFENEX_FINANCIAL_GROUP.roster,
     openingKick,
     startQuarter,
   };

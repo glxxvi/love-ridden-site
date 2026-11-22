@@ -21,26 +21,27 @@ function resolveRef(ref, roster) {
   const num = ref.num != null && ref.num !== '' ? Number(ref.num) : null;
 
   if (ref.team === 'US') {
-    // Prefer roster match by id, then by worn number.
     if (ref.id) {
-      const p = roster.find(r => r.id === ref.id);
+      const p = roster.find(r => r._side === 'US' && r.id === ref.id);
       if (p) return { key: `US:${p.id}`, team: 'US', num: Number(p.wornNumber), name: p.displayName, id: p.id };
     }
     if (num != null) {
-      const p = roster.find(r => Number(r.wornNumber) === num);
+      const p = roster.find(r => r._side === 'US' && Number(r.wornNumber) === num);
       if (p) return { key: `US:${p.id}`, team: 'US', num: Number(p.wornNumber), name: p.displayName, id: p.id };
-      // No roster match — fall back to number-only (same behavior as opponent).
       return { key: `US:#${num}`, team: 'US', num, name: ref.name || '', id: null };
     }
     if (ref.id) {
-      // Id only, no roster match — still useful as an identity key.
       return { key: `US:${ref.id}`, team: 'US', num: null, name: ref.name || ref.id, id: ref.id };
     }
     return null;
   }
 
   if (ref.team === 'OPP') {
-    if (num != null) return { key: `OPP:#${num}`, team: 'OPP', num, name: ref.name || '', id: null };
+    if (num != null) {
+      const p = roster.find(r => r._side === 'OPP' && Number(r.wornNumber) === num);
+      const name = ref.name || (p ? p.displayName : '');
+      return { key: `OPP:#${num}`, team: 'OPP', num, name, id: null };
+    }
     if (ref.name) return { key: `OPP:${ref.name}`, team: 'OPP', num: null, name: ref.name, id: null };
     return null;
   }
@@ -336,7 +337,12 @@ function applyPenalty(ev, st, book) {
 
 // ---------- main replay ----------
 export function replay(setup, events) {
-  const roster = (setup.roster || []).filter(r => r.active !== false);
+  const usRoster = (setup.roster || []).filter(r => r.active !== false);
+  const oppRoster = setup.oppRoster || [];
+  const roster = [
+    ...usRoster.map(r => ({ ...r, _side: 'US' })),
+    ...oppRoster.map(r => ({ ...r, _side: 'OPP' })),
+  ];
   const teams = setup.teams || {};
   const names = {
     US: ((teams.US && (teams.US.short || teams.US.name)) || 'US'),
@@ -348,7 +354,8 @@ export function replay(setup, events) {
   // even if they never record a stat. If no roster is supplied, this loop
   // is empty and US players are created on-demand by number — exactly like
   // the opponent behavior.
-  for (const r of roster) {
+    for (const r of roster) {
+    if (r._side !== 'US') continue;
     book.player({ key: `US:${r.id}`, team: 'US', num: Number(r.wornNumber), name: r.displayName, id: r.id });
   }
 
