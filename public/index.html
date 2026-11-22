@@ -1,207 +1,727 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto" data-theme="auto">
-
+<html lang="en">
 <head>
-	<meta name="generator" content="Hugo 0.162.1"><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>Love Ridden</title>
-
-<meta name="description" content="">
-<meta name="author" content="">
-<link rel="canonical" href="https://loveridden.com/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.89ca4972ab5e6aaa05e9a0dae0c4bb64b26585bc79e36f5cf33614eea0283abe.css" integrity="sha256-icpJcqteaqoF6aDa4MS7ZLJlhbx5429c8zYU7qAoOr4=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://loveridden.com/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://loveridden.com/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://loveridden.com/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://loveridden.com/apple-touch-icon.png">
-<link rel="mask-icon" href="https://loveridden.com/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="https://loveridden.com/index.xml" title="rss">
-<link rel="alternate" hreflang="en" href="https://loveridden.com/">
-<noscript>
+	<meta name="generator" content="Hugo 0.162.1"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Love Ridden</title>
     <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
+        :root {
+            --bg-body: #faf9f6;
+            --text-primary: #1a1a1a;
+            --text-secondary: #5a5a5a;
+            --surface: #ffffff;
+            --surface-border: #e0dbd2;
+            --surface-hover-border: #b0a99e;
+            --surface-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.02);
+            --surface-hover-shadow: 0 8px 24px rgba(0,0,0,0.07);
+            --pill-bg: #ece7df;
+            --pill-hover: #dcd6cc;
+            --accent: #1a1a1a;
+            --accent-text: #ffffff;
+            --footer-bg: #f5f3ef;
+            --footer-text: #6a6a6a;
+            --footer-border: #e0dbd2;
+            --detail-bg: #fdfcf9;
+            --card-active-border: #1a1a1a;
+            --card-active-shadow: 0 0 0 3px rgba(26,26,26,0.08);
+            --overlay-bg: #faf9f6;
+            --progress-bg: #d2ccc2;
+            --progress-fill: #1a1a1a;
+            --radius: 10px;
+            --space-sm: 0.75rem;
+            --space-md: 1.25rem;
+            --font-stack: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+            --fallback-red: rgba(255, 179, 186, 0.8);
+        }
+        body.dark {
+            --bg-body: #121212;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a8a8a8;
+            --surface: #1c1c1c;
+            --surface-border: #2e2e2e;
+            --surface-hover-border: #444;
+            --surface-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.03);
+            --surface-hover-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            --pill-bg: #2a2a2a;
+            --pill-hover: #3a3a3a;
+            --accent: #e0e0e0;
+            --accent-text: #121212;
+            --footer-bg: #181818;
+            --footer-text: #888;
+            --footer-border: #2e2e2e;
+            --detail-bg: #1a1a1a;
+            --card-active-border: #e0e0e0;
+            --card-active-shadow: 0 0 0 3px rgba(224,224,224,0.1);
+            --overlay-bg: #121212;
+            --progress-bg: #2e2e2e;
+            --progress-fill: #e0e0e0;
+            --fallback-red: rgba(255, 138, 128, 0.8);
+        }
+        body.amoled {
+            --bg-body: #000000;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --surface: #0a0a0a;
+            --surface-border: #1a1a1a;
+            --surface-hover-border: #333;
+            --surface-shadow: 0 2px 8px rgba(0,0,0,0.8);
+            --surface-hover-shadow: 0 8px 24px rgba(255,255,255,0.05);
+            --pill-bg: #141414;
+            --pill-hover: #222;
+            --accent: #ffffff;
+            --accent-text: #000000;
+            --footer-bg: #050505;
+            --footer-text: #999;
+            --footer-border: #1a1a1a;
+            --detail-bg: #080808;
+            --card-active-border: #ffffff;
+            --card-active-shadow: 0 0 0 3px rgba(255,255,255,0.15);
+            --overlay-bg: #000000;
+            --progress-bg: #1a1a1a;
+            --progress-fill: #ffffff;
+            --fallback-red: rgba(255, 82, 82, 0.8);
         }
 
-    </style>
-    <style>
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --theme: rgb(29, 30, 32);
-                --entry: rgb(46, 46, 51);
-                --primary: rgb(218, 218, 219);
-                --secondary: rgb(155, 156, 157);
-                --tertiary: rgb(65, 66, 68);
-                --content: rgb(196, 196, 197);
-                --code-block-bg: rgb(46, 46, 51);
-                --code-bg: rgb(55, 56, 62);
-                --border: rgb(51, 51, 51);
-                color-scheme: dark;
-            }
-
-            .list {
-                background: var(--theme);
-            }
-
-            .toc {
-                background: var(--entry);
-            }
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+        }
+        body {
+            font-family: var(--font-stack);
+            background: var(--bg-body);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        body.splash-active {
+            overflow: hidden;
+            height: 100vh;
         }
 
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+        .category-card:focus-visible { outline-offset: 5px; }
+        button:focus-visible, a:focus-visible { outline-offset: 2px; }
+
+         
+        .splash-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: var(--overlay-bg) url('courthouse-bg.JPEG') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s cubic-bezier(0.4,0,0.2,1), visibility 0.5s;
+            opacity: 1;
+            visibility: visible;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            padding: var(--space-md);
+        }
+        .splash-overlay::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--overlay-bg);
+            opacity: 0.35;
+            z-index: 0;
+        }
+        .splash-overlay.dismissed {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .splash-logo-wrap {
+            position: relative;
+            z-index: 1;
+            width: min(70vw, 70vh, 620px);
+            max-width: 90vw;
+            transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s;
+            animation: logoPulse 3s ease-in-out infinite;
+        }
+        @keyframes logoPulse {
+            0%,100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .splash-overlay.dismissing .splash-logo-wrap {
+            transform: scale(0.92);
+            opacity: 0;
+        }
+        .splash-logo { width: 100%; height: auto; display: block; }
+        .logo-splash-light { display: block; }
+        .logo-splash-dark { display: none; }
+        body.dark .logo-splash-light, body.amoled .logo-splash-light { display: none; }
+        body.dark .logo-splash-dark, body.amoled .logo-splash-dark { display: block; }
+        .splash-hint {
+            position: absolute;
+            bottom: 8vh;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.03em;
+            opacity: 0;
+            transition: opacity 0.6s;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .splash-hint.visible { opacity: 0.7; animation: hintPulse 0.8s ease-in-out infinite; }
+        @keyframes hintPulse { 0%,100% { opacity:0.5; } 50% { opacity:0.9; } }
+        .splash-progress {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 3px; background: var(--progress-bg); z-index: 1;
+        }
+        .splash-progress-bar {
+            height: 100%; background: var(--progress-fill);
+            width: 0%; transition: width 0.05s linear; border-radius: 0 2px 2px 0;
+        }
+
+         
+        .main-layout { opacity: 0; transition: opacity 0.5s ease 0.15s; }
+        .main-layout.revealed { opacity: 1; }
+        body.splash-active .main-layout { opacity: 0; pointer-events: none; }
+
+         
+        .site-header {
+            display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+            padding: var(--space-sm) var(--space-md);
+            max-width: 1200px; margin: 0 auto;
+            position: sticky; top: 0; z-index: 100;
+            background: transparent; backdrop-filter: blur(0px);
+            transition: background 0.3s, backdrop-filter 0.3s, box-shadow 0.3s;
+            border-radius: 0 0 var(--radius) var(--radius);
+        }
+        .site-header.scrolled-header {
+            background: var(--bg-body); backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px); box-shadow: 0 1px 0 var(--surface-border);
+        }
+        .header-left, .header-right { display: flex; align-items: center; gap: var(--space-sm); }
+        .header-right { justify-self: end; }
+        .header-center { display: flex; justify-content: center; align-items: center; }
+        .header-logo { height: 28px; width: auto; display: block; transition: height 0.3s; }
+        .logo-header-light { display: block; }
+        .logo-header-dark { display: none; }
+        body.dark .logo-header-light, body.amoled .logo-header-light { display: none; }
+        body.dark .logo-header-dark, body.amoled .logo-header-dark { display: block; }
+
+        .pill-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: var(--space-sm) var(--space-md); border-radius: var(--radius);
+            background: var(--pill-bg); border: none; cursor: pointer;
+            font-size: 0.875rem; font-weight: 500; color: var(--text-primary);
+            letter-spacing: 0.01em; transition: background 0.2s, transform 0.2s, color 0.3s;
+            white-space: nowrap; text-decoration: none;
+            -webkit-tap-highlight-color: transparent; font-family: inherit;
+        }
+        .pill-btn:hover { background: var(--pill-hover); transform: translateY(-1px); }
+        .pill-btn:active { transform: scale(0.96); }
+        .pill-btn .icon { font-size: 1.1rem; line-height: 1; }
+        .pill-btn.disabled { opacity: 0.5; pointer-events: none; cursor: not-allowed; }
+        .theme-toggle-pill {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 38px; height: 38px; border-radius: var(--radius);
+            background: var(--pill-bg); border: none; cursor: pointer;
+            font-size: 1.1rem; transition: background 0.2s, transform 0.2s, color 0.3s;
+            color: var(--text-primary); flex-shrink: 0;
+        }
+        .theme-toggle-pill:hover { background: var(--pill-hover); transform: scale(1.05); }
+        .theme-toggle-pill:active { transform: scale(0.95); }
+
+        @media (max-width: 640px) {
+            .pill-btn .btn-text { display: none; }
+            .pill-btn { padding: var(--space-sm); gap: 0; }
+            .site-header { padding: var(--space-sm); }
+            .header-logo { height: 22px; }
+            .theme-toggle-pill { width: 32px; height: 32px; font-size: 1rem; }
+        }
+
+         
+        .brand-intro {
+            max-width: 900px; margin: 0 auto; padding: 2rem var(--space-md) 1rem;
+            text-align: center; font-size: 1.1rem; color: var(--text-secondary);
+            line-height: 1.8; transition: opacity 0.3s ease, max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease;
+            overflow: hidden; max-height: 300px; opacity: 1;
+        }
+        .brand-intro.collapsed {
+            max-height: 0; opacity: 0; padding-top: 0; padding-bottom: 0;
+            margin-top: 0; margin-bottom: 0; pointer-events: none;
+        }
+
+         
+        .main-content { max-width: 1100px; margin: 0 auto; padding: 1rem var(--space-md) 2rem; }
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        @media (max-width: 640px) {
+            .cards-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .main-content { padding: 1rem var(--space-sm) 1.5rem; }
+            .brand-intro { padding: 1.5rem var(--space-sm) 0.5rem; font-size: 1rem; }
+        }
+
+         
+        .category-card {
+            position: relative; background: var(--surface);
+            border: 1.5px solid var(--surface-border); border-radius: var(--radius);
+            box-shadow: var(--surface-shadow); cursor: pointer;
+            -webkit-tap-highlight-color: transparent; user-select: none;
+            display: flex; flex-direction: column;
+            transition: opacity 0.55s cubic-bezier(0.2,0.9,0.4,1), transform 0.55s;
+            padding: 0;
+        }
+        .cards-grid.reveal-complete .category-card {
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.3s, transform 0.2s;
+        }
+        .category-card:hover { transform: translateY(-3px); box-shadow: var(--surface-hover-shadow); border-color: var(--surface-hover-border); }
+        .category-card:active { transform: scale(0.975); }
+        .category-card.active {
+            border-color: var(--card-active-border); box-shadow: var(--card-active-shadow);
+            background: var(--detail-bg);
+        }
+        .category-card.active:hover { transform: none; }
+
+        .card-close-btn {
+            position: absolute; top: var(--space-sm); right: var(--space-sm);
+            background: var(--pill-bg); border: none; border-radius: var(--radius);
+            cursor: pointer; font-size: 1rem; padding: 0.4rem 0.6rem; line-height: 1;
+            color: var(--text-primary); transition: background 0.2s, color 0.3s;
+            display: none; z-index: 5;
+        }
+        .category-card.active .card-close-btn { display: flex; align-items: center; gap: 4px; }
+        .card-close-btn:hover { background: var(--pill-hover); }
+        .card-close-btn .close-text { font-size: 0.8rem; }
+        @media (max-width: 640px) { .card-close-btn .close-text { display: none; } }
+
+        .card-header {
+            background: transparent; background-size: cover; background-position: center;
+            padding: var(--space-md); border-radius: var(--radius) var(--radius) 0 0;
+            transition: background 0.3s; flex-shrink: 0; position: relative;
+        }
+        .category-card.active .card-header {
+            padding-right: 3.5rem;
+            background-color: var(--fallback-red);
+        }
+        .card-header-content {
+            position: relative; z-index: 1; display: flex; flex-direction: column; gap: 0.75rem;
+        }
+        .card-icon-wrap {
+            width: 52px; height: 52px; border-radius: calc(var(--radius)*0.8);
+            background: var(--pill-bg); display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; flex-shrink: 0; transition: background 0.3s, color 0.3s;
+            overflow: hidden;
+        }
+        .card-icon-wrap img { max-width: 70%; max-height: 70%; object-fit: contain; }
+        .category-card.active .card-icon-wrap { background: var(--accent); color: var(--accent-text); }
+        .card-name { font-size: 1.25rem; font-weight: 600; }
+        .card-horizontal-logo {
+            display: none; height: 30px; max-width: 200px; align-items: center;
+            align-self: center;
+        }
+        .category-card.active .card-horizontal-logo { display: flex; }
+        .category-card.active .card-name { display: none; }
+        .card-horizontal-logo img { height: 100%; width: auto; object-fit: contain; }
+        .logo-card-light { display: block; }
+        .logo-card-dark { display: none; }
+        body.dark .logo-card-light, body.amoled .logo-card-light { display: none; }
+        body.dark .logo-card-dark, body.amoled .logo-card-dark { display: block; }
+
+        .icon-light { display: block; }
+        .icon-dark { display: none; }
+        body.dark .icon-light, body.amoled .icon-light { display: none; }
+        body.dark .icon-dark, body.amoled .icon-dark { display: block; }
+
+        .card-desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; }
+        .card-controller {
+            font-size: 0.78rem; color: var(--text-secondary); text-transform: uppercase;
+            opacity: 0.7; font-weight: 500; transition: opacity 0.2s, max-height 0.3s, margin 0.3s;
+            overflow: hidden;
+        }
+        .card-controller span { font-weight: 600; color: var(--text-primary); opacity: 0.9; }
+        .category-card.active .card-desc,
+        .category-card.active .card-controller {
+            opacity: 0; max-height: 0; margin: 0; padding: 0; pointer-events: none;
+        }
+
+         
+        .card-detail {
+            max-height: 0; opacity: 0; overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.2,0.9,0.4,1), opacity 0.35s, padding 0.4s;
+            border-top: 1px solid transparent; padding: 0 var(--space-md);
+        }
+        .category-card.active .card-detail {
+            opacity: 1; border-top-color: var(--surface-border);
+            padding-top: 1rem; padding-bottom: var(--space-md);
+        }
+        .detail-body { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 0.75rem; }
+        .detail-credits {
+            font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;
+            opacity: 0.7; font-weight: 500; margin-bottom: 0.75rem;
+        }
+        .detail-credits strong { color: var(--text-primary); font-weight: 600; }
+        .detail-enter-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: var(--space-sm) var(--space-md); border-radius: var(--radius);
+            background: var(--accent); color: var(--accent-text);
+            text-decoration: none; font-weight: 600; font-size: 0.9rem;
+            transition: background 0.2s, transform 0.2s, filter 0.2s;
+        }
+        .detail-enter-link:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+         
+        .site-footer {
+            background: var(--footer-bg); border-top: 1px solid var(--footer-border);
+            margin-top: 3rem; padding: 2.5rem var(--space-md) 2rem;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .footer-inner {
+            max-width: 1100px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+            gap: 2rem;
+        }
+        .footer-col h4 {
+            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em;
+            color: var(--footer-text); margin-bottom: 0.75rem; font-weight: 600;
+        }
+        .footer-col p, .footer-col a {
+            font-size: 0.85rem; color: var(--footer-text); text-decoration: none;
+            line-height: 1.8; display: block; transition: color 0.2s;
+        }
+        .footer-col a:hover { color: var(--text-primary); text-decoration: underline; }
+        .footer-bottom {
+            max-width: 1100px; margin: 2rem auto 0; padding-top: 1.5rem;
+            border-top: 1px solid var(--footer-border); text-align: center;
+            font-size: 0.78rem; color: var(--footer-text); transition: border-color 0.3s;
+        }
+        .footer-bottom strong { font-weight: 600; color: var(--text-primary); opacity: 0.8; }
+
+         
+        .category-card { opacity: 0; transform: translateY(28px); }
+        .category-card.card-revealed { opacity: 1; transform: translateY(0); }
+        .category-card:nth-child(1){ transition-delay:0.05s; }
+        .category-card:nth-child(2){ transition-delay:0.12s; }
+        .category-card:nth-child(3){ transition-delay:0.19s; }
+        .category-card:nth-child(4){ transition-delay:0.26s; }
+        .category-card:nth-child(5){ transition-delay:0.33s; }
+        .category-card:nth-child(6){ transition-delay:0.4s; }
     </style>
-</noscript>
-<script>
-    if (localStorage.getItem("pref-theme") === "dark") {
-        document.querySelector("html").dataset.theme = 'dark';
-    } else if (localStorage.getItem("pref-theme") === "light") {
-       document.querySelector("html").dataset.theme = 'light';
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.querySelector("html").dataset.theme = 'dark';
-    } else {
-        document.querySelector("html").dataset.theme = 'light';
-    }
-
-</script><meta property="og:url" content="https://loveridden.com/">
-  <meta property="og:site_name" content="Love Ridden">
-  <meta property="og:title" content="Love Ridden">
-  <meta property="og:locale" content="en_us">
-  <meta property="og:type" content="website">
-
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Love Ridden">
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Love Ridden",
-  "url": "https://loveridden.com/",
-  "description": "",
-  "logo": "https://loveridden.com/favicon.ico",
-  "sameAs": [
-      
-  ]
-}
-</script>
+    <script>
+        (function(){
+            const saved = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if(saved === 'dark' || saved === 'amoled' || (!saved && prefersDark)){
+                document.documentElement.classList.add(saved === 'amoled' ? 'amoled' : 'dark');
+            }
+        })();
+    </script>
 </head>
-<body class="list" id="top">
-    <header class="header">
-    <nav class="header-nav">
-        <div class="logo">
-            <a href="https://loveridden.com/" accesskey="h" title="Love Ridden (Alt + H)">Love Ridden</a>
-            <div class="logo-switches">
-                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
-                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
+<body class="splash-active">
+    <div class="splash-overlay" id="splashOverlay" aria-hidden="false">
+        <div class="splash-logo-wrap">
+            <img class="splash-logo logo-splash-light" src="wordmark-black.PNG" alt="Love Ridden" draggable="false">
+            <img class="splash-logo logo-splash-dark" src="wordmark-white.PNG" alt="Love Ridden" draggable="false">
+        </div>
+        <p class="splash-hint" id="splashHint">click or scroll to continue</p>
+        <div class="splash-progress"><div class="splash-progress-bar" id="splashProgressBar"></div></div>
+    </div>
+
+    <div class="main-layout" id="mainLayout">
+        <header class="site-header" id="siteHeader">
+            <div class="header-left">
+                <button class="pill-btn menu-btn" id="menuBtn" title="Scroll to categories">
+                    <span class="icon">☰</span> <span class="btn-text">Explore</span>
                 </button>
             </div>
-        </div>
-        <ul id="menu" class="menu">
-        </ul>
-    </nav>
-</header>
-<main class="main"> 
-    </main>
-    
-<footer class="footer">
-        <span>&copy; 2026 <a href="https://loveridden.com/">Love Ridden</a></span> · 
+            <div class="header-center">
+                <img class="header-logo logo-header-light" src="wordmark-black.PNG" alt="Love Ridden" draggable="false">
+                <img class="header-logo logo-header-dark" src="wordmark-white.PNG" alt="Love Ridden" draggable="false">
+            </div>
+            <div class="header-right">
+                <button class="pill-btn account-btn disabled" id="accountBtn" title="Account coming soon" aria-disabled="true">
+                    <span class="icon">👤</span> <span class="btn-text">Account</span>
+                </button>
+                <button class="theme-toggle-pill" id="themeToggle" title="Switch theme">
+                    <span id="themeToggleIcon">🌙</span>
+                </button>
+            </div>
+        </header>
 
-    
-    
-    <span>
-        Powered by
-        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
-        <polyline points="17 11 12 6 7 11"></polyline>
-        <polyline points="17 18 12 13 7 18"></polyline>
-    </svg>
-</a>
+        <main class="main-content" id="mainContent">
+            <section class="brand-intro" id="brandIntro">
+                <p>Founded in 2018 as a survival pact between two young creators, Love Ridden has grown into multiple arenas. Not only are we home to the foremost independent record label in East Texas, we provide services such as Photography, Videography, Studio Sessions, Mixing and Mastering, as well as Graphic Design. Love is dedicated to every project we undertake.</p>
+            </section>
+            <div class="cards-grid" id="cardsGrid"></div>
+        </main>
 
-<script>
-    let menu = document.getElementById('menu');
-    if (menu) {
-        
-        const scrollPosition = localStorage.getItem("menu-scroll-position");
-        if (scrollPosition) {
-            menu.scrollLeft = parseInt(scrollPosition, 10);
-        }
-        
-        menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
+        <footer class="site-footer">
+            <div class="footer-inner">
+                <div class="footer-col"><h4>Love Ridden</h4><p>Seeking the truth in artistic creation. Based in East Texas.</p></div>
+                <div class="footer-col"><h4>Sub-Brands</h4><a href="/records">Records</a><a href="/wolf-den">The Wolf Den</a><a href="/hotseat">Hotseat</a></div>
+                <div class="footer-col"><h4>Info</h4><a href="#">About</a><a href="#">Contact</a><a href="#">Press</a></div>
+                <div class="footer-col"><h4>Credits</h4><p>Site by <strong>Gabriel Hoffman</strong></p><p>Powered by <strong>Hugo</strong></p><p>Design &amp; Development</p><p>© <span id="footerYear"></span> Love Ridden</p></div>
+            </div>
+            <div class="footer-bottom">
+                <p>Love Ridden — seeking the truth through artistic creation</p>
+                <p style="margin-top:0.4rem;">Built by <strong>Gabriel Hoffman</strong> · All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
 
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
+    <script>
+        (function() {
+            const categoryData = [
+                {
+                    id: 'records',
+                    name: 'Records',
+                    iconLight: 'records-logo.png',       
+                    iconDark: 'records-logo-white.png',  
+                    shortDesc: "Love Ridden Records, the home of East Texas's future.",
+                    controlledBy: 'Gabriel Hoffman & JaBryson Crane',
+                    fullDesc: 'Love Ridden Records is the flagship music imprint, dedicated to amplifying raw talent from East Texas and beyond. We focus on artist development, authentic storytelling, and high-fidelity production.',
+                    extendedCredits: 'Co-Founder & A&R: Gabriel Hoffman · Co-Founder: JaBryson Crane · Engineering: Studio Collective · Mastering: Gabriel Hoffman · Art Direction: In-house',
+                    link: '/records',
+                    logoLight: 'records-logo.png',
+                    logoDark: 'records-logo-white.png',
+                    backgroundImage: 'records-bg.jpg'
+                },
+                {
+                    id: 'wolf-den',
+                    name: 'The Wolf Den',
+                    icon: '🐺',
+                    shortDesc: 'The ultimate tool for athletic history in San Augustine County.',
+                    controlledBy: 'Gabriel Hoffman',
+                    fullDesc: 'The Wolf Den is a comprehensive digital archive preserving the rich athletic legacy of San Augustine County. From historic game annals to completed rosters from the last 15 years.',
+                    extendedCredits: 'Curator & Developer: Gabriel Hoffman · Data Contributors: San Augustine Athletics, UIL, PigskinPrep, MaxPreps, Smoaky.com · Archival Support: Community Volunteers',
+                    link: '/wolf-den',
+                    logoLight: 'wolfden-wordmark.png',
+                    logoDark: 'wolfden-wordmark-white.png',
+                    backgroundImage: 'wolfden-bg.jpg'
+                },
+                {
+                    id: 'hotseat',
+                    name: 'Hotseat',
+                    icon: '🔥',
+                    shortDesc: 'A collection of independent works by locals.',
+                    controlledBy: 'Gabriel Hoffman',
+                    fullDesc: 'Hotseat is a rotating showcase of independent creative projects — articles, short films, podcasts, and experimental art — all produced by local talent.',
+                    extendedCredits: 'Curator: Gabriel Hoffman · Featured Creators: Rotating roster of East Texas artists · Production Support: Studio 96',
+                    link: '/hotseat',
+                    logoLight: 'wordmark-black.PNG',
+                    logoDark: 'wordmark-white.PNG',
+                    backgroundImage: null
+                }
+            ];
+
+            const splashOverlay = document.getElementById('splashOverlay');
+            const splashHint = document.getElementById('splashHint');
+            const splashProgressBar = document.getElementById('splashProgressBar');
+            const mainLayout = document.getElementById('mainLayout');
+            const siteHeader = document.getElementById('siteHeader');
+            const cardsGrid = document.getElementById('cardsGrid');
+            const themeToggle = document.getElementById('themeToggle');
+            const themeToggleIcon = document.getElementById('themeToggleIcon');
+            const menuBtn = document.getElementById('menuBtn');
+            const accountBtn = document.getElementById('accountBtn');
+            const footerYear = document.getElementById('footerYear');
+            const brandIntro = document.getElementById('brandIntro');
+            if(footerYear) footerYear.textContent = new Date().getFullYear();
+
+            const themeNextNames = { light:'dark', dark:'black', amoled:'light' };
+            const themeIcons = { light:'☀️', dark:'🌙', amoled:'⬛' };
+
+            function applyTheme(t){
+                document.body.classList.remove('dark','amoled');
+                if(t==='dark') document.body.classList.add('dark');
+                if(t==='amoled') document.body.classList.add('amoled');
+                themeToggleIcon.textContent = themeIcons[t]||'🌙';
+                localStorage.setItem('theme', t);
+                const next = themeNextNames[t] || 'dark';
+                themeToggle.title = `Switch to ${next} mode`;
+            }
+            function getNextTheme(cur){
+                const cycle = ['light','dark','amoled'];
+                const i = cycle.indexOf(cur);
+                return cycle[(i+1)%3];
+            }
+            function initTheme(){
+                let s = localStorage.getItem('theme');
+                if(!s || !['light','dark','amoled'].includes(s)) {
+                    s = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
+                applyTheme(s);
+            }
+            initTheme();
+            themeToggle.addEventListener('click', ()=>{
+                const cur = [...document.body.classList].find(c=>c==='dark'||c==='amoled')||'light';
+                applyTheme(getNextTheme(cur));
+            });
+
+            
+            categoryData.forEach(cat=>{
+                const card = document.createElement('div');
+                card.className = 'category-card';
+                card.dataset.categoryId = cat.id;
+                card.setAttribute('role','button');
+                card.tabIndex = 0;
+
+                const iconHtml = cat.iconLight
+                    ? `<img class="icon-light" src="${cat.iconLight}" alt="${cat.name} icon"><img class="icon-dark" src="${cat.iconDark}" alt="${cat.name} icon">`
+                    : `<span>${cat.icon}</span>`;
+
+                card.innerHTML = `
+                    <button class="card-close-btn" aria-label="Close detail"><span>✕</span> <span class="close-text">Close</span></button>
+                    <div class="card-header">
+                        <div class="card-header-content">
+                            <div class="card-icon-wrap">${iconHtml}</div>
+                            <div class="card-name">${cat.name}</div>
+                            <div class="card-horizontal-logo">
+                                <img class="logo-card-light" src="${cat.logoLight}" alt="${cat.name} logo">
+                                <img class="logo-card-dark" src="${cat.logoDark}" alt="${cat.name} logo">
+                            </div>
+                            <div class="card-desc">${cat.shortDesc}</div>
+                            <div class="card-controller">Controlled by <span>${cat.controlledBy}</span></div>
+                        </div>
+                    </div>
+                    <div class="card-detail"></div>
+                `;
+                cardsGrid.appendChild(card);
+                card.querySelector('.card-close-btn').addEventListener('click', (e)=>{
+                    e.stopPropagation();
+                    closeDetail();
                 });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            });
+
+            const allCards = document.querySelectorAll('.category-card');
+            let activeCardId = null;
+
+            function setDetailContent(card, catData){
+                const detail = card.querySelector('.card-detail');
+                detail.innerHTML = `
+                    <div class="detail-body">${catData.fullDesc}</div>
+                    <div class="detail-credits"><strong>Credits:</strong> ${catData.extendedCredits}</div>
+                    <a href="${catData.link}" class="detail-enter-link">Enter ${catData.name} →</a>
+                `;
+                detail.style.maxHeight = 'none';
+                const scrollHeight = detail.scrollHeight;
+                detail.style.maxHeight = '0px';
+                requestAnimationFrame(() => {
+                    detail.style.maxHeight = scrollHeight + 'px';
+                });
             }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
+
+            function openDetail(card, catData){
+                if(activeCardId && activeCardId !== catData.id){
+                    const prev = document.querySelector(`.category-card[data-category-id="${activeCardId}"]`);
+                    if(prev) {
+                        prev.classList.remove('active');
+                        prev.querySelector('.card-header').style.backgroundImage = '';
+                    }
+                }
+                const header = card.querySelector('.card-header');
+                if(catData.backgroundImage) {
+                    header.style.backgroundImage = `url('${catData.backgroundImage}')`;
+                } else {
+                    header.style.backgroundImage = '';
+                }
+                setDetailContent(card, catData);
+                card.classList.add('active');
+                activeCardId = catData.id;
+                setTimeout(()=> card.scrollIntoView({behavior:'smooth', block:'nearest'}), 100);
             }
-        });
-    });
 
-</script>
-<script>
-    var toplink = document.getElementById("top-link");
-    window.onscroll = function () {
-        const scrollThreshold = window.innerHeight;
-        if (document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold) {
-            toplink.classList.remove("hidden");
-        } else {
-            toplink.classList.add("hidden");
-        }
-    };
+            function closeDetail(){
+                if(activeCardId){
+                    const card = document.querySelector(`.category-card[data-category-id="${activeCardId}"]`);
+                    if(card) {
+                        card.classList.remove('active');
+                        card.querySelector('.card-header').style.backgroundImage = '';
+                        const detail = card.querySelector('.card-detail');
+                        detail.style.maxHeight = '0px';
+                    }
+                }
+                activeCardId = null;
+            }
 
-</script>
-<script>
-    document.getElementById("theme-toggle").addEventListener("click", () => {
-        const html = document.querySelector("html");
-        if (html.dataset.theme === "dark") {
-            html.dataset.theme = 'light';
-            localStorage.setItem("pref-theme", 'light');
-        } else {
-            html.dataset.theme = 'dark';
-            localStorage.setItem("pref-theme", 'dark');
-        }
-    })
+            allCards.forEach(card=>{
+                card.addEventListener('click', (e)=>{
+                    if(e.target.closest('.card-close-btn') || e.target.closest('.detail-enter-link')) return;
+                    const catId = card.dataset.categoryId;
+                    if(activeCardId === catId) closeDetail();
+                    else {
+                        const catData = categoryData.find(c=>c.id===catId);
+                        if(catData) openDetail(card, catData);
+                    }
+                });
+                card.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); card.click(); } });
+            });
 
-</script>
+            
+            const SPLASH_DUR = 3200, FADE = 500;
+            let splashDismissed = false, splashStart = Date.now(), timerId, progId;
+            function dismissSplash(){
+                if(splashDismissed) return;
+                splashDismissed = true;
+                clearTimeout(timerId); clearInterval(progId);
+                splashOverlay.classList.add('dismissing');
+                document.body.classList.remove('splash-active');
+                mainLayout.classList.add('revealed');
+                setTimeout(()=>{ splashOverlay.classList.add('dismissed'); splashOverlay.setAttribute('aria-hidden','true'); }, FADE);
+                const total = allCards.length, stagger = 70;
+                setTimeout(()=>{
+                    allCards.forEach((c,i)=> setTimeout(()=> c.classList.add('card-revealed'), i*stagger) );
+                    setTimeout(()=> cardsGrid.classList.add('reveal-complete'), (total-1)*stagger+600 );
+                }, 200);
+            }
+            function updateProgress(){ splashProgressBar.style.width = Math.min((Date.now()-splashStart)/SPLASH_DUR*100,100)+'%'; }
+            timerId = setTimeout(dismissSplash, SPLASH_DUR);
+            progId = setInterval(updateProgress, 30);
+            updateProgress();
+            setTimeout(()=>{ if(!splashDismissed) splashHint.classList.add('visible'); }, 1000);
+            splashOverlay.addEventListener('click', ()=>{ if(!splashDismissed) dismissSplash(); });
+            window.addEventListener('wheel', e=>{ if(!splashDismissed && Math.abs(e.deltaY)>15) dismissSplash(); }, {passive:true});
+            let touchY=0;
+            window.addEventListener('touchstart', e=>{ if(!splashDismissed) touchY=e.touches[0].clientY; }, {passive:true});
+            window.addEventListener('touchmove', e=>{ if(!splashDismissed && Math.abs(e.touches[0].clientY-touchY)>25) dismissSplash(); }, {passive:true});
+            window.addEventListener('keydown', e=>{ if(!splashDismissed && ['Escape','Enter',' '].includes(e.key)){ e.preventDefault(); dismissSplash(); } });
+
+            
+            function handleScroll(){ siteHeader.classList.toggle('scrolled-header', window.scrollY>30); }
+            window.addEventListener('scroll', handleScroll, {passive:true});
+            handleScroll();
+
+            
+            const COLLAPSE_THRESHOLD = 80;
+            function handleBrandIntroScroll(){
+                brandIntro.classList.toggle('collapsed', window.scrollY > COLLAPSE_THRESHOLD);
+            }
+            window.addEventListener('scroll', handleBrandIntroScroll, {passive:true});
+            handleBrandIntroScroll();
+
+            
+            menuBtn.addEventListener('click', ()=>{
+                document.getElementById('cardsGrid').scrollIntoView({behavior:'smooth', block:'start'});
+            });
+
+            
+            accountBtn.classList.add('disabled');
+            accountBtn.setAttribute('aria-disabled', 'true');
+            accountBtn.title = 'Account coming soon';
+            accountBtn.addEventListener('click', (e) => e.preventDefault());
+        })();
+    </script>
 </body>
-
 </html>
