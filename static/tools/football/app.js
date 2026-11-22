@@ -12,6 +12,7 @@ const state = {
   importPreview: null,
   importError: null,
   lineupDraft: null,
+  starters: { qb: null, k: null },
   kicking: null,
 };
 
@@ -233,6 +234,97 @@ function renderLineup() {
     await store.putMany('roster', updated);
     await refreshRoster();
     state.lineupDraft = null;
+    state.starters = { qb: null, k: null };
+    state.screen = 'starters';
+    render();
+  });
+}
+
+function buildGroupedPlayerOptions(players, tiers, selectedId) {
+  const assigned = new Set();
+  const sorted = [...players].sort((a, b) => {
+    const na = a.wornNumber ?? a.numbers[0];
+    const nb = b.wornNumber ?? b.numbers[0];
+    if (na !== nb) return na - nb;
+    return a.displayName.localeCompare(b.displayName);
+  });
+
+  let html = '';
+  for (const tier of tiers) {
+    const matches = tier.match
+      ? sorted.filter(p => !assigned.has(p.id) && p.positions.some(pos => tier.match.test(pos.trim())))
+      : sorted.filter(p => !assigned.has(p.id));
+    matches.forEach(p => assigned.add(p.id));
+    if (matches.length === 0) continue;
+    html += `<optgroup label="${tier.label}">`;
+    html += matches.map(p => {
+      const worn = p.wornNumber ?? p.numbers[0];
+      const sel = p.id === selectedId ? ' selected' : '';
+      return `<option value="${p.id}"${sel}>#${worn} ${esc(p.displayName)}</option>`;
+    }).join('');
+    html += `</optgroup>`;
+  }
+  return html;
+}
+
+function renderStarters() {
+  const active = state.roster.filter(p => p.active !== false);
+
+  const qbTiers = [
+    { label: 'QB / ATH', match: /^(QB|ATH)$/i },
+    { label: 'Skill Positions', match: /^(RB|HB|FB|WR|TE)$/i },
+    { label: 'Others', match: null },
+  ];
+  const kTiers = [
+    { label: 'Kickers', match: /^(K|PK)$/i },
+    { label: 'Punters', match: /^P$/i },
+    { label: 'Others', match: null },
+  ];
+
+  const ready = state.starters.qb && state.starters.k;
+
+  app.innerHTML = `
+    <div class="screen">
+      <h1>Starters</h1>
+      <p class="muted">Pick who's taking the first snap and kicking. Anyone active is selectable.</p>
+
+      <label class="field">
+        <span>Starting QB</span>
+        <select id="qbSelect">
+          <option value="">— Select —</option>
+          ${buildGroupedPlayerOptions(active, qbTiers, state.starters.qb)}
+        </select>
+      </label>
+
+      <label class="field">
+        <span>Starting K</span>
+        <select id="kSelect">
+          <option value="">— Select —</option>
+          ${buildGroupedPlayerOptions(active, kTiers, state.starters.k)}
+        </select>
+      </label>
+
+      <div class="row-buttons">
+        <button id="backBtn" class="btn-secondary">Back</button>
+        <button id="continueBtn" class="btn-primary" ${ready ? '' : 'disabled'}>Continue</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('qbSelect').addEventListener('change', e => {
+    state.starters.qb = e.target.value || null;
+    document.getElementById('continueBtn').disabled = !(state.starters.qb && state.starters.k);
+  });
+  document.getElementById('kSelect').addEventListener('change', e => {
+    state.starters.k = e.target.value || null;
+    document.getElementById('continueBtn').disabled = !(state.starters.qb && state.starters.k);
+  });
+
+  document.getElementById('backBtn').addEventListener('click', () => {
+    state.screen = 'lineup';
+    render();
+  });
+  document.getElementById('continueBtn').addEventListener('click', () => {
     state.kicking = { quarter: 1, kickingTeam: null };
     state.screen = 'kicking';
     render();
@@ -286,8 +378,7 @@ function renderKicking() {
   });
 
   document.getElementById('backBtn').addEventListener('click', () => {
-    state.lineupDraft = null;
-    state.screen = 'lineup';
+    state.screen = 'starters';
     render();
   });
 
@@ -296,6 +387,17 @@ function renderKicking() {
     state.screen = 'drive';
     render();
   });
+}
+
+function getPlayer(id) {
+  return state.roster.find(p => p.id === id) || null;
+}
+
+function playerLine(id) {
+  const p = getPlayer(id);
+  if (!p) return '—';
+  const worn = p.wornNumber ?? p.numbers[0];
+  return `#${worn} ${p.displayName}`;
 }
 
 function renderDriveStub() {
@@ -315,12 +417,19 @@ function renderDriveStub() {
           <div class="muted small">${esc(kickingLabel)} kicking off · ${activeCount} active players</div>
         </div>
       </div>
+      <div class="roster-row">
+        <div>
+          <strong>Starters</strong>
+          <div class="muted small">QB: ${esc(playerLine(state.starters.qb))} · K: ${esc(playerLine(state.starters.k))}</div>
+        </div>
+      </div>
       <button id="resetBtn" class="btn-secondary">Back to Setup (for testing)</button>
     </div>
   `;
 
   document.getElementById('resetBtn').addEventListener('click', () => {
     state.kicking = null;
+    state.starters = { qb: null, k: null };
     state.screen = 'setup';
     render();
   });
@@ -332,6 +441,7 @@ function render() {
     case 'roster': renderRosterImport(); break;
     case 'rosterPreview': renderRosterPreview(); break;
     case 'lineup': renderLineup(); break;
+    case 'starters': renderStarters(); break;
     case 'kicking': renderKicking(); break;
     case 'drive': renderDriveStub(); break;
   }
