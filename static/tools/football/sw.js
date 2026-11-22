@@ -1,8 +1,5 @@
-// sw.js — stale-while-revalidate. Serve cached instantly; refresh in background.
-// No manual VERSION bumps required for future updates — the cache catches up on the
-// next load after any push.
-
-const VERSION = 'v13';
+// sw.js — stale-while-revalidate, redirect-safe.
+const VERSION = 'v14';
 const CACHE = `safb-${VERSION}`;
 const SHELL = [
   './', './index.html', './app.js', './storage.js', './roster.js',
@@ -26,21 +23,34 @@ self.addEventListener('activate', e => {
     caches.keys()
       .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
-      .then(() => console.log(`[sw] ${VERSION} active`))
   );
 });
+
+// Strip the redirect flag from a response so it can be served from cache later.
+async function cleanResponse(res) {
+  if (!res.redirected) return res;
+  const body = await res.clone().blob();
+  return new Response(body, {
+    status: res.status,
+    statusText: res.statusText,
+    headers: res.headers,
+  });
+}
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
   if (url.origin !== location.origin) return;
 
-  // Kick off a background fetch unconditionally — this keeps the cache fresh.
+  // Background revalidation — fetch fresh, clean redirect, cache only good 200s.
   const networkPromise = fetch(e.request)
-    .then(res => {
+    .then(async res => {
       if (res && res.status === 200) {
-        const copy = res.clone();
-        caches.open(CACHE).then(c => c.put(e.request, copy));
+        try {
+          const clean = await cleanResponse(res.clone());
+          const cache = await caches.open(CACHE);
+          await cache.put(e.request, clean);
+        } catch {}
       }
       return res;
     })
@@ -48,11 +58,15 @@ self.addEventListener('fetch', e => {
 
   e.waitUntil(networkPromise);
 
-  // Serve cache if present; otherwise await the network; otherwise fall back to shell.
   e.respondWith(
-    caches.match(e.request).then(cached => {
-      if (cached) return cached;
-      return networkPromise.then(res => res || caches.match('./index.html'));
+    caches.match(e.request).then(async cached => {
+      // Only serve cache if it's a clean (non-redirected) 200. Otherwise go network.
+      if (cached && cached.status === 200 && !cached.redirected) return cached;
+      const res = await networkPromise;
+      if (res) return res;
+      // Last resort: cached shell, or nothing.
+      const shell = await caches.match('./index.html');
+      return shell || new Response('', { status: 503 });
     })
   );
 });
