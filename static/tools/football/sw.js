@@ -1,4 +1,4 @@
-const VERSION = 'v7';
+const VERSION = 'v12';
 const CACHE = `safb-${VERSION}`;
 const SHELL = [
   './', './index.html', './app.js', './storage.js', './roster.js',
