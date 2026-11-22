@@ -4,8 +4,26 @@ import { replay, us, opp, field as F } from './engine/engine.js';
 import { testSetup } from './engine/test-teams.js';
 import { loadGame } from './game-state.js';
 
-// --- Boot: load the game from the handoff, or fall back to test teams in dev ---
+// --- Boot: load game from handoff, or allow ?dev=1 for isolated testing ---
 const stored = loadGame();
+const isDev = new URLSearchParams(location.search).has('dev');
+
+if (!stored && !isDev) {
+  // No handoff and not in dev mode — show a helpful screen instead of fake teams.
+  document.body.style.visibility = 'visible';
+  document.body.innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;padding:24px;text-align:center;font-family:'Geist Mono',ui-monospace,monospace;color:#e8e8ea;background:#0a0a0b">
+      <h1 style="font-size:20px;margin:0 0 12px;font-weight:600">No game loaded</h1>
+      <p style="color:#7e7e83;margin:0 0 24px;font-size:14px;line-height:1.5;max-width:320px">
+        Start a game from the setup page, or append <code style="background:#1c1c1f;padding:2px 6px;border-radius:4px;font-size:12px">?dev=1</code> to this URL to test with dev teams.
+      </p>
+      <a href="./index.html" style="background:#3ddc97;color:#052418;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;font-family:inherit">Go to Setup</a>
+    </div>
+  `;
+  // Controlled early exit — stops the rest of the module from running.
+  throw new Error('No game loaded — redirected to setup');
+}
+
 const devMode = !stored;
 
 const game = stored || (() => {
@@ -22,6 +40,9 @@ const game = stored || (() => {
     startQuarter: t.startQuarter,
   };
 })();
+
+// Tab title reflects the actual teams loaded.
+document.title = `${game.teams.US.short || game.teams.US.name} vs ${game.teams.OPP.short || game.teams.OPP.name} — Scorer`;
 
 // Setup object the engine consumes — colors/abbr/logo are ignored by replay().
 const setup = {
